@@ -8,10 +8,10 @@
 from yahoo_fin import options
 from yahoo_fin import stock_info
 
-stock = 'AAPL'
+stock = 'XOM'
 
 aaplCallChain = options.get_calls(stock)
 currentPrice=stock_info.get_live_price(stock)
 
-aaplOptions = options.get_calls(stock).plot(x='Strike',y=['Bid','Ask'], xlim=[.5*currentPrice,1.5*currentPrice],title='Bid/Ask Spread for {}'.format(stock))
+aaplOptions = options.get_calls(stock).plot(x='Strike',y=['Bid','Ask'], xlim=[.5*currentPrice,1.5*currentPrice],title='Bid/Ask Call Spread for {}'.format(stock))
 aaplOptions.axvline(currentPrice, color='green', ls='--')
