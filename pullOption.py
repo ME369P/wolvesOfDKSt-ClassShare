@@ -8,7 +8,7 @@
 from yahoo_fin import options
 from yahoo_fin import stock_info
 
-stock = 'XOM'
+stock = 'PLUG'
 
 aaplCallChain = options.get_calls(stock)
 currentPrice=stock_info.get_live_price(stock)
