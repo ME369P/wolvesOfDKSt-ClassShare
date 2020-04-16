@@ -22,8 +22,8 @@ from scipy import stats
 # user inputs
 personalRiskTolerance = .5
 budget = 15000
-weeksOut = 7
-t = (weeksOut * 7)/365
+#weeksOut = 5
+t = 15/365 #(weeksOut * 7)/365
 
 stockPareto = pd.DataFrame()
 
@@ -33,12 +33,12 @@ print('Starting Data Capture')
 for stock in stock_info.tickers_dow():
     
     try:
-        optionsDate = options.get_expiration_dates(stock)[weeksOut+1]
-        individualOptionsData = options.get_puts(stock,date=optionsDate)
+        optionsDate = options.get_expiration_dates(stock)[weeksOut-1]
+        individualOptionsData = options.get_puts(stock,date='05/01/20')
     except:
         print('No data from {}'.format(stock))
         continue
-    S = stock_info.get_live_price(stock)
+    individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
     individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
     stockPareto = stockPareto.append(individualOptionsData)
     print('Data from {} collected'.format(stock))
@@ -53,7 +53,7 @@ bidsExist = stockPareto['Bid'] != '-'
 
 stockPareto = stockPareto[beingTraded & asksExist & bidsExist]
 
-stockPareto['POP'] = 1-stats.norm.cdf((np.log(S / stockPareto['Strike'] ) + ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
+stockPareto['POP'] = stats.norm.cdf((np.log(stockPareto['Current Price'] / stockPareto['Strike'] ) + ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
 stockPareto['Strike'] = stockPareto['Strike'].astype(float)
 stockPareto['Bid'] = stockPareto['Bid'].astype(float)
 stockPareto['Ask'] = stockPareto['Ask'].astype(float)
