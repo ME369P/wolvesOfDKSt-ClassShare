@@ -1,6 +1,6 @@
 # hrhwPhase1.py
 # Date Created: 4/14/20
-# Date Last Modified: XX
+# Date Last Modified: 04/16/20
 # By: Nick Piacente
 
 # Get some kind of pareto from stocks to give to Ziam for Goal Programming
@@ -21,7 +21,7 @@ from scipy import stats
 
 # user inputs
 personalRiskTolerance = .9
-budget = 15000
+budget = 10000
 #weeksOut = 5
 t = 15/365 #(weeksOut * 7)/365
 
@@ -30,17 +30,20 @@ stockPareto = pd.DataFrame()
 print('Starting Data Capture')
 
 # initial data capture and processing
-for stock in stock_info.tickers_dow():
+for stock in stock_info.tickers_sp500():
     
     try:
         #optionsDate = options.get_expiration_dates(stock)[weeksOut-1]
         individualOptionsData = options.get_puts(stock,date='05/01/20')
+        individualOptionsData['Stock Name'] = stock
+        individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
+        individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
     except:
         print('No data from {}'.format(stock))
         continue
-    individualOptionsData['Stock Name'] = stock
-    individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
-    individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
+    #individualOptionsData['Stock Name'] = stock
+    #individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
+    #individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
     stockPareto = stockPareto.append(individualOptionsData)
     print('Data from {} collected'.format(stock))
 
