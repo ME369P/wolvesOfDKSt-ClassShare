@@ -56,7 +56,7 @@ X = np.linspace(0, 2 * np.pi, 50)
 Y = np.sin(X)
 
 # # create figure for plotting
-fig = Figure(figsize=(2, 3), dpi=100)
+fig = Figure(figsize=(3, 2), dpi=100)
 ax = fig.add_axes([0, 0, 1, 1])
 ax.set_ylabel('Premium Collected')
 ax.set_title('Pareto Curve for Best Options (Puts)')
@@ -81,6 +81,9 @@ fig_w, fig_h = fig_photo.width(), fig_photo.height()
 # Add more elements to the canvas, potentially on top of the figure
 canvas.create_line(200, 50, fig_x + fig_w / 2, fig_y + fig_h / 2)
 canvas.create_text(200, 50, text="Zero-crossing", anchor="s")
+
+
+
 
 ### to collect key press events:
 # canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
