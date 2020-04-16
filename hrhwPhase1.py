@@ -21,7 +21,9 @@ from scipy import stats
 
 # user inputs
 personalRiskTolerance = .5
-budget = 20000
+budget = 15000
+weeksOut = 7
+t = (weeksOut * 7)/365
 
 stockPareto = pd.DataFrame()
 
@@ -30,20 +32,38 @@ print('Starting Data Capture')
 # initial data capture and processing
 for stock in stock_info.tickers_dow():
     
-    individualOptionsData = options.get_puts(stock)
+    try:
+        optionsDate = options.get_expiration_dates(stock)[weeksOut+1]
+        individualOptionsData = options.get_puts(stock,date=optionsDate)
+    except:
+        print('No data from {}'.format(stock))
+        continue
     S = stock_info.get_live_price(stock)
-    t = 3/365
     individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
     stockPareto = stockPareto.append(individualOptionsData)
     print('Data from {} collected'.format(stock))
 
 print('Data Capture Complete!')
 
-stockPareto['Potential Gain'] = stockPareto['Last Price'] * 100
-stockPareto['POP'] = stats.norm.cdf((np.log(S / stockPareto['Strike'] ) + ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
+#stockPareto['Potential Gain'] = stockPareto['Last Price'] * 100
+
+beingTraded = stockPareto['Volume'] != '-'
+asksExist = stockPareto['Ask'] != '-'
+bidsExist = stockPareto['Bid'] != '-'
+
+stockPareto = stockPareto[beingTraded & asksExist & bidsExist]
+
+stockPareto['POP'] = 1-stats.norm.cdf((np.log(S / stockPareto['Strike'] ) + ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
 stockPareto['Strike'] = stockPareto['Strike'].astype(float)
+stockPareto['Bid'] = stockPareto['Bid'].astype(float)
+stockPareto['Ask'] = stockPareto['Ask'].astype(float)
+stockPareto['contractsInBudget'] = np.floor(budget/(stockPareto['Strike']*100))
+stockPareto['Potential Gain'] = ((stockPareto['Ask'] - stockPareto['Bid'])/2) * 100
+stockPareto['Potential Gain Multiple Contracts'] = stockPareto['Potential Gain'] * stockPareto['contractsInBudget']
 
-inBudget = stockPareto['Strike'] * 100 <= budget
-stockPareto = stockPareto[inBudget]
+inBudget = stockPareto['contractsInBudget'] > 0
+isInteresting = stockPareto['Bid'] != 0
+withinPersonalRiskTolerance = stockPareto['POP'] > personalRiskTolerance
+stockPareto = stockPareto[inBudget & isInteresting]
 
-stockPareto.plot(kind='scatter',x='POP',y='Potential Gain', xlim = [personalRiskTolerance-.3,personalRiskTolerance + .3])
+stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')
