@@ -41,10 +41,10 @@ def getOptionsData(personalRiskTolerance, budget, t):
     """
     # user inputs
     # personalRiskTolerance = .9
-    # budget = 10000
+    # budget = 100000
     # #weeksOut = 5
-    # t = 15/365 #(weeksOut * 7)/365
-    
+    # t = 4#15/365 #(weeksOut * 7)/365
+        
     stockPareto = pd.DataFrame()
     
     print('Starting Data Capture')
@@ -54,7 +54,7 @@ def getOptionsData(personalRiskTolerance, budget, t):
         
         try:
             #optionsDate = options.get_expiration_dates(stock)[weeksOut-1]
-            individualOptionsData = options.get_puts(stock,date='05/01/20')
+            individualOptionsData = options.get_puts(stock,date='05/15/20')
             individualOptionsData['Stock Name'] = stock
             individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
             individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
