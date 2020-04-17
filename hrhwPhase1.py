@@ -18,7 +18,6 @@ from yahoo_fin import stock_info
 import pandas as pd
 import numpy as np
 from scipy import stats
-import xarray as xr
 
 
 def getOptionsData(personalRiskTolerance, budget, t):
@@ -118,13 +117,18 @@ def formatOptionsdataFrame(pareto_df):
 
     Returns
     -------
-    xArrayOptions : TYPE
-        DESCRIPTION.
+    tickerGroup : list of dataFrames
+        list of dataFrames from pareto_df grouped by ticker symbol
 
     """
-    
-    
-    return xArrayOptions
+    tickerGroup = []
+    for ticker in pareto_df['Stock Name'].unique():
+        tickerGroup.append(pareto_df[pareto_df['Stock Name'] == ticker])
+        
+    return tickerGroup
+
+
+
 
 
 
