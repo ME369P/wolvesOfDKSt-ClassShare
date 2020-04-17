@@ -18,69 +18,114 @@ from yahoo_fin import stock_info
 import pandas as pd
 import numpy as np
 from scipy import stats
+import xarray as xr
 
-# user inputs
-personalRiskTolerance = .9
-budget = 10000
-#weeksOut = 5
-t = 15/365 #(weeksOut * 7)/365
 
-stockPareto = pd.DataFrame()
-
-print('Starting Data Capture')
-
-# initial data capture and processing
-for stock in stock_info.tickers_sp500():
+def getOptionsData(personalRiskTolerance, budget, t):
+    """
     
-    try:
-        #optionsDate = options.get_expiration_dates(stock)[weeksOut-1]
-        individualOptionsData = options.get_puts(stock,date='05/01/20')
-        individualOptionsData['Stock Name'] = stock
-        individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
-        individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
-    except:
-        print('No data from {}'.format(stock))
-        continue
-    #individualOptionsData['Stock Name'] = stock
-    #individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
-    #individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
-    stockPareto = stockPareto.append(individualOptionsData)
-    print('Data from {} collected'.format(stock))
+    Parameters
+    ----------
+    personalRiskTolerance : float
+        decimal of the allowable risk for the user
+    budget : int
+        Max amount of collatoral available to trade with
+    t : int
+        time until expiration date of option
 
-print('Data Capture Complete!')
+    Returns
+    -------
+    tuple of pandas DataFrames
+    (stockPareto, bestPick) 
+    i.e. (all the available options data, top most profitable picks)
 
-#stockPareto['Potential Gain'] = stockPareto['Last Price'] * 100
+    """
+    # user inputs
+    # personalRiskTolerance = .9
+    # budget = 10000
+    # #weeksOut = 5
+    # t = 15/365 #(weeksOut * 7)/365
+    
+    stockPareto = pd.DataFrame()
+    
+    print('Starting Data Capture')
+    
+    # initial data capture and processing
+    for stock in stock_info.tickers_dow():
+        
+        try:
+            #optionsDate = options.get_expiration_dates(stock)[weeksOut-1]
+            individualOptionsData = options.get_puts(stock,date='05/01/20')
+            individualOptionsData['Stock Name'] = stock
+            individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
+            individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
+        except:
+            print('No data from {}'.format(stock))
+            continue
+        #individualOptionsData['Stock Name'] = stock
+        #individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
+        #individualOptionsData['IV']= individualOptionsData['Implied Volatility'].str.slice_replace(-1,repl='').astype(float)/100
+        stockPareto = stockPareto.append(individualOptionsData)
+        print('Data from {} collected'.format(stock))
+    
+    print('Data Capture Complete!')
+    
+    #stockPareto['Potential Gain'] = stockPareto['Last Price'] * 100
+    
+    beingTraded = stockPareto['Volume'] != '-'
+    asksExist = stockPareto['Ask'] != '-'
+    bidsExist = stockPareto['Bid'] != '-'
+    
+    stockPareto = stockPareto[beingTraded & asksExist & bidsExist]
+    
+    stockPareto['POP'] = stats.norm.cdf((np.log(stockPareto['Current Price'] / stockPareto['Strike'] ) + ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
+    stockPareto['Strike'] = stockPareto['Strike'].astype(float)
+    stockPareto['Bid'] = stockPareto['Bid'].astype(float)
+    stockPareto['Ask'] = stockPareto['Ask'].astype(float)
+    stockPareto['contractsInBudget'] = np.floor(budget/(stockPareto['Strike']*100))
+    stockPareto['Potential Gain'] = ((stockPareto['Ask'] + stockPareto['Bid'])/2) * 100
+    stockPareto['Potential Gain Multiple Contracts'] = stockPareto['Potential Gain'] * stockPareto['contractsInBudget']
+    
+    inBudget = stockPareto['contractsInBudget'] > 0
+    isInteresting = stockPareto['Bid'] != 0
+    withinPersonalRiskTolerance = stockPareto['POP'] > personalRiskTolerance
+    stockPareto = stockPareto[inBudget & isInteresting]
+    stockPareto.set_index('Contract Name')
+    
+    stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name')
+    
+    ####################
+    ## Best Fit Logic ##
+    ####################
+    
+    notAboveRisk = stockPareto['POP'] < (personalRiskTolerance + .01)
+    notBelowRisk = stockPareto['POP'] > (personalRiskTolerance - .01)
+    bestPick = stockPareto[notBelowRisk & notAboveRisk].sort_values(by='Potential Gain Multiple Contracts',ascending = False)
+    bestPick = bestPick.loc[bestPick['Potential Gain Multiple Contracts'].idxmax()]
+    
+    print('The best OPTION is:')
+    print(bestPick)
+    return stockPareto, bestPick
 
-beingTraded = stockPareto['Volume'] != '-'
-asksExist = stockPareto['Ask'] != '-'
-bidsExist = stockPareto['Bid'] != '-'
+def formatOptionsdataFrame(pareto_df):
+    """
+    
 
-stockPareto = stockPareto[beingTraded & asksExist & bidsExist]
+    Parameters
+    ----------
+    pareto_df : dataFrame
+        All Options in selected stock index 
 
-stockPareto['POP'] = stats.norm.cdf((np.log(stockPareto['Current Price'] / stockPareto['Strike'] ) + ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
-stockPareto['Strike'] = stockPareto['Strike'].astype(float)
-stockPareto['Bid'] = stockPareto['Bid'].astype(float)
-stockPareto['Ask'] = stockPareto['Ask'].astype(float)
-stockPareto['contractsInBudget'] = np.floor(budget/(stockPareto['Strike']*100))
-stockPareto['Potential Gain'] = ((stockPareto['Ask'] + stockPareto['Bid'])/2) * 100
-stockPareto['Potential Gain Multiple Contracts'] = stockPareto['Potential Gain'] * stockPareto['contractsInBudget']
+    Returns
+    -------
+    xArrayOptions : TYPE
+        DESCRIPTION.
 
-inBudget = stockPareto['contractsInBudget'] > 0
-isInteresting = stockPareto['Bid'] != 0
-withinPersonalRiskTolerance = stockPareto['POP'] > personalRiskTolerance
-stockPareto = stockPareto[inBudget & isInteresting]
-stockPareto.set_index('Contract Name')
+    """
+    
+    
+    return xArrayOptions
 
-stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name')
 
-####################
-## Best Fit Logic ##
-####################
 
-notAboveRisk = stockPareto['POP'] < (personalRiskTolerance + .01)
-notBelowRisk = stockPareto['POP'] > (personalRiskTolerance - .01)
-bestPick = stockPareto[notBelowRisk & notAboveRisk].sort_values(by='Potential Gain Multiple Contracts',ascending = False)
-bestPick = bestPick.loc[bestPick['Potential Gain Multiple Contracts'].idxmax()]
 
-print('The best OPTION is:')
-print(bestPick)
