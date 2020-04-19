@@ -63,9 +63,9 @@ root.wm_title("Put Option Strategy")
 root.geometry('1500x800+100+100')
 fig = Figure(figsize=(9,8), dpi=100)
 ax = fig.add_subplot(111)
-# t = np.arange(0.0, 3.0, 0.01)
-# s = np.sin(2*np.pi*t)
-# ax.plot(t,s)
+t = np.arange(0.0, 3.0, 0.01)
+s = np.sin(2*np.pi*t)
+ax.plot(t,s)
 # plotOptions(ax, , {})
 
 
