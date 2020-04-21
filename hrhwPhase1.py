@@ -26,7 +26,7 @@ budget = 10000
 # date selection
 # currently hardcoded, needs some updating
 # weeksOut = 5
-t = 15/365 #(weeksOut * 7)/365 # alternate date logic - needs work
+t = 11/365 #(weeksOut * 7)/365 # alternate date logic - needs work
 
 stockPareto = pd.DataFrame()
 
@@ -99,9 +99,9 @@ stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', l
 ## Best Fit Logic ##
 ####################
 
-notAboveRisk = stockPareto['POP'] < (personalRiskTolerance + .01)
-notBelowRisk = stockPareto['POP'] > (personalRiskTolerance - .01)
-bestPick = stockPareto[notBelowRisk & notAboveRisk].sort_values(by='Potential Gain Multiple Contracts',ascending = False)
+#notAboveRisk = stockPareto['POP'] < (personalRiskTolerance + .01)
+notBelowRisk = stockPareto['POP'] > (personalRiskTolerance)
+bestPick = stockPareto[notBelowRisk].sort_values(by='Potential Gain Multiple Contracts',ascending = False)
 bestPick = bestPick.loc[bestPick['Potential Gain Multiple Contracts'].idxmax()]
 
 print('The best OPTION is:')
