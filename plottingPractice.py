@@ -43,10 +43,18 @@ def plotOptions(ax, list_DF, param_dict):
 
     """
     colors = cm.rainbow(np.linspace(0, 1, len(list_DF)))
-    for DF, c in zip(list_DF, colors):
-        out = DF.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name', ax=ax, color=c)
+    # for DF, c in zip(list_DF, colors):
+    #     out = DF.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name', ax=ax, color=c)
+    # return out
+
+
+    # d = {'col1': [1, 2], 'col2': [3, 4]}
+    # df = pd.DataFrame(data=d)
+    df = list_DF
+    out = df.plot(kind='scatter',x='col1',y='col2', legend = 'Stock Name', ax=ax, color=colors)
     return out
-    plt.axes(ax)
+
+    # plt.axes(ax)
 
 def create_widgets(self):
     self.hi_there = tkinter.Button(self)
@@ -59,16 +67,23 @@ def create_widgets(self):
     self.quit.pack(side="bottom")
 
 
+    
+
 root = tkinter.Tk()
 root.wm_title("Put Option Strategy")
 root.geometry('1500x800+100+100')
 fig = Figure(figsize=(9,8), dpi=100)
 ax = fig.add_subplot(111)
-t = np.arange(0.0, 3.0, 0.01)
-s = np.sin(2*np.pi*t)
-ax.plot(t,s)
-# plotOptions(ax, , {})
+# t = np.arange(0.0, 3.0, 0.01)
+# s = np.sin(2*np.pi*t)
+# ax.plot(t,s)
 
+d = {'col1': [1, 2], 'col2': [3, 4]}
+df = pd.DataFrame(data=d)
+
+ax = plotOptions(ax, df, {})
+
+# ax.plot()
 
 # ax.plot(t, s)
 ax.set_title('Pareto Curve for Best Options (Puts)')
@@ -93,8 +108,14 @@ canvas._tkcanvas.pack(side=tkinter.RIGHT)#, fill=tkinter.BOTH, expand=1)
 def callback():
     print("click!")
 
-b = tkinter.Button(master=root, text="OK", command=callback)
+b = tkinter.Button(master=root, text="Quit", command=callback)
 b.pack(side=tkinter.BOTTOM)
+
+def refresh():
+    print("refresh")
+
+refresh = tkinter.Button(master=root, text = "Refresh", command=refresh)
+refresh.pack(side=tkinter.BOTTOM)
 
 tkinter.mainloop()
 
