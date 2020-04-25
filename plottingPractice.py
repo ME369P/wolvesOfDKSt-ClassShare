@@ -19,39 +19,39 @@ import getYahooData as yd
 # a = pandas.DataFrame(np.random.rand(4,5), columns = list('abcde'))
 # a_asndarray = a.values
 
-def plotOptions(ax, pareto_df, param_dict):
-    """
-    Function to plot options data from yahoo_fin
+# def plotOptions(ax, pareto_df, param_dict):
+#     """
+#     Function to plot options data from yahoo_fin
 
-    Parameters
-    ----------
-    ax : Axes
-    The axes to draw to
+#     Parameters
+#     ----------
+#     ax : Axes
+#     The axes to draw to
 
-    data1 : array
-        The x data
+#     data1 : array
+#         The x data
 
-    data2 : array
-        The y data
+#     data2 : array
+#         The y data
 
-    param_dict : dict
-        Dictionary of kwargs to pass to ax.plot
+#     param_dict : dict
+#         Dictionary of kwargs to pass to ax.plot
 
-    Returns
-    -------
-    out : list
-        list of artists added
+#     Returns
+#     -------
+#     out : list
+#         list of artists added
 
-    """
-    tickerGroup = []
-    for ticker in pareto_df['Stock Name'].unique():
-        tickerGroup.append(pareto_df[pareto_df['Stock Name'] == ticker])
+#     """
+#     tickerGroup = []
+#     for ticker in pareto_df['Stock Name'].unique():
+#         tickerGroup.append(pareto_df[pareto_df['Stock Name'] == ticker])
     
-    colors = cm.rainbow(np.linspace(0, 1, len(tickerGroup)))
-    for DF, c in zip(tickerGroup, colors):
-        out = DF.plot(kind='line',x='POP',y='Potential Gain Multiple Contracts', 
-                      legend = 'Stock Name', ax=ax, color=c)
-    return ax
+#     colors = cm.rainbow(np.linspace(0, 1, len(tickerGroup)))
+#     for DF, c in zip(tickerGroup, colors):
+#         out = DF.plot(kind='line',x='POP',y='Potential Gain Multiple Contracts', 
+#                       legend = 'Stock Name', ax=ax, color=c)
+#     return ax
 
 
 
@@ -65,11 +65,12 @@ def plotOptions(ax, pareto_df, param_dict):
 #                           command=self.master.destroy)
 #     self.quit.pack(side="bottom")
 
-
+flag = False
 def store_data():
     print("Risk: %s\nBudget: %s" % (Risk.get(), Budget.get()))
     Risk_num = float(Risk.get())
     Budget_num = float(Budget.get())
+    flag = True
     return Risk_num, Budget_num
 
 
@@ -78,10 +79,10 @@ root = tkinter.Tk()
 root.wm_title("Put Option Strategy")
 root.geometry('1500x800+100+100')
 
-input_root = tkinter.Tk()
-input_root = tkinter.Toplevel()
-input_root.wm_title("Inputs")
-textFrame = tkinter.Frame(input_root, relief = tkinter.RAISED, borderwidth=5)
+# input_root = tkinter.Tk()
+# input_root = tkinter.Toplevel()
+# input_root.wm_title("Inputs")
+textFrame = tkinter.Frame(root, relief = tkinter.RAISED, borderwidth=5)
 textFrame.pack()
 
 
@@ -96,8 +97,8 @@ Risk.pack()#side=tkinter.LEFT, anchor=tkinter.SW)
 tkinter.Label(textFrame, text="Budget").pack()#side=tkinter.LEFT, anchor=tkinter.SW)
 Budget = tkinter.Entry(textFrame)
 Budget.pack()#side=tkinter.LEFT, anchor=tkinter.SW)
-Risk_num = Risk.get()
-Budget_num = Budget.get()
+# Risk_num = Risk.get()
+# Budget_num = Budget.get()
 
     
 tkinter.Button(textFrame, text='Enter', command=store_data).pack()
@@ -116,17 +117,20 @@ yd.getDetailedQuote('DOW', detail_ax)
 canvas = FigureCanvasTkAgg(detail_fig, master=root)
 canvas.get_tk_widget().pack(side=tkinter.LEFT, anchor=tkinter.NW)#, fill=tkinter.X)#, expand=1)
 
-
 # initalize figure and axes objects using pyplot for pareto curve
-pareto_fig = plt.Figure(figsize=(8,7), dpi=100)
+pareto_fig = plt.figure(figsize=(8,7), dpi=100)
 pareto_ax = pareto_fig.add_subplot(111)
 pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
 pareto_ax.set_xlabel('Probability of Profit (%)')
 pareto_ax.set_ylabel('Premium Collected')
-# stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
+
+stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
 # put pareto curve axes into tkinter GUI
 canvas = FigureCanvasTkAgg(pareto_fig, master=root)
 canvas.get_tk_widget().pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
+
+
+# canvas.create_oval(10, 10, 80, 80, outline="#f11",fill="#1f1", width=2)
 
 
 
