@@ -23,7 +23,7 @@ from scipy import stats
 personalRiskTolerance = .9
 budget = 10000
 
-def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
+def getOptionsData(personalRiskTolerance, budget, pareto_ax, printOutput = 'True'):
     # get the up to date stock options pareto.
     # Currently hardcoded for the DOW stocks
     # inputs: personal risk tolerance, budget
@@ -87,7 +87,8 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     ####################################################
     
     # POP derived from Black-Scholes model
-    stockPareto['POP'] = stats.norm.cdf((np.log(stockPareto['Current Price'] / stockPareto['Strike'] ) + ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
+    stockPareto['POP'] = stats.norm.cdf((np.log(stockPareto['Current Price'] / stockPareto['Strike'] ) + 
+                                         ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
     stockPareto['Strike'] = stockPareto['Strike'].astype(float)
     stockPareto['Bid'] = stockPareto['Bid'].astype(float)
     stockPareto['Ask'] = stockPareto['Ask'].astype(float)
@@ -109,7 +110,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     stockPareto = stockPareto[inBudget & isInteresting]
     stockPareto.set_index('Contract Name')
     
-    stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name')
+    stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name', ax=pareto_ax)
     
     ####################
     ## Best Fit Logic ##
@@ -128,7 +129,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
 
 
-def getDetailedQuote(stock):
+def getDetailedQuote(stock, tk_ax):
     # get the detailded bid/ask quote data for charting
     # input : stock ticker of the option of interest
     # for use with bestPick frame:
@@ -139,12 +140,15 @@ def getDetailedQuote(stock):
     currentPrice=stock_info.get_live_price(stock)
     #info = stock_info.get_quote_table(stock)
     
-    stockOptions = options.get_puts(stock).plot(x='Strike',y=['Bid','Ask'], xlim=[.5*currentPrice,1.5*currentPrice],title='Bid/Ask Call Spread for {}'.format(stock))
+    stockOptions = options.get_puts(stock).plot(x='Strike',y=['Bid','Ask'], 
+                                                xlim=[.5*currentPrice,1.5*currentPrice],
+                                                title='Bid/Ask Call Spread for {}'.format(stock),
+                                                ax=tk_ax)
     stockOptions.axvline(currentPrice, color='green', ls='--')
 
     return stockOptions
 
 
-if __name__ == '__main__':
-    #getOptionsData(personalRiskTolerance, budget, printOutput = False)
-    charty = getDetailedQuote('DOW')
+# if __name__ == '__main__':
+#     #getOptionsData(personalRiskTolerance, budget, printOutput = False)
+#     # charty = getDetailedQuote('DOW', ax)
