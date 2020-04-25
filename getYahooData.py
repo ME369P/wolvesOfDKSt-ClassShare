@@ -31,7 +31,6 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     # outputs: 
     #   stockPareto DataFrame (all options within the budget)
     #   bestPick DataFrame (highest value return within risk tolerance)
-    #   stockParetoChart (matplotlob AxesSubplot object of risk/reward tradeoff)
     # hardcoded:
     #   options date - 5/1/2020
     #   stocks to pick from: All DOW stocks
@@ -123,7 +122,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
         print('The best OPTION is:')
         print(bestPick)
         
-    return stockPareto, bestPick, stockParetoChart
+    return stockPareto, bestPick
 
 
 

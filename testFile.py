@@ -11,4 +11,4 @@ Import works!
 import getYahooData as yd
 
 finalFrame, bestSelection, stockParetoChart = yd.getOptionsData(.9,7500)
-bidAskChart = yd.getDetailedQuote('DOW')
+#bidAskChart = yd.getDetailedQuote('DOW')
