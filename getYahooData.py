@@ -1,14 +1,14 @@
 # getYahooData.py
 # Date Created: 4/14/20
-# Date Last Modified: 04/21/20
+# Date Last Modified: 04/25/20
 # By: Nick Piacente
 
-# Get some kind of pareto from stocks to give to Ziam for Goal Programming
-# stockPareto is a DataFrame with all of the options data from the DOW
+# Functions for generating processed dataframes and plots
+# For future plotting in a GUI environment
 # important columns:
 #
 # 'Potential Gain' - this is the option contract price * 100
-# 'POP' - this is the probability of profit. The equation needs some work
+# 'POP' - this is the probability of profit. The 
 #
 # Currently filtering options by budget = strike price * 100
 # It takes a few seconds per stock to fetch data from the internet on my machine (NP)
@@ -18,6 +18,7 @@ from yahoo_fin import stock_info
 import pandas as pd
 import numpy as np
 from scipy import stats
+from datetime import datetime
 
 # user inputs
 personalRiskTolerance = .9
@@ -31,15 +32,16 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     #   stockPareto DataFrame (all options within the budget)
     #   bestPick DataFrame (highest value return within risk tolerance)
     #   stockParetoChart (matplotlob AxesSubplot object of risk/reward tradeoff)
-    
-    
-    
+    # hardcoded:
+    #   options date - 5/1/2020
+    #   stocks to pick from: All DOW stocks
     
     # date selection
-    # currently hardcoded, needs some updating
-    # weeksOut = 5
-    t = 11/365 #(weeksOut * 7)/365 # alternate date logic - needs work
-    
+    today = datetime.today()
+    optionsDate = datetime(2020,5,1)
+    t = ((optionsDate - today).days + ((optionsDate - today).seconds/86400))/365
+    if printOutput:
+        print('t = {}'.format(t))
     stockPareto = pd.DataFrame()
     
     if printOutput:
@@ -50,10 +52,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
         
         # checks if there is an option during the particular week.
         try:
-            # alternate week selection logic
-            #optionsDate = options.get_expiration_dates(stock)[weeksOut-1]
-            individualOptionsData = options.get_puts(stock,date='05/01/20')
-            
+            individualOptionsData = options.get_puts(stock,date=optionsDate)
             # capture stock, current price for each stock
             individualOptionsData['Stock Name'] = stock
             individualOptionsData['Current Price'] = stock_info.get_live_price(stock)
@@ -146,5 +145,5 @@ def getDetailedQuote(stock):
 
 
 if __name__ == '__main__':
-    #getOptionsData(personalRiskTolerance, budget, printOutput = False)
-    charty = getDetailedQuote('DOW')
+    getOptionsData(personalRiskTolerance, budget, printOutput = True)
+    #chart = getDetailedQuote('DOW')
