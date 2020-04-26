@@ -105,7 +105,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     isInteresting = stockPareto['Bid'] != 0
     #withinPersonalRiskTolerance = stockPareto['POP'] > personalRiskTolerance
     stockPareto = stockPareto[inBudget & isInteresting]
-    stockPareto.set_index('Contract Name')
+    stockPareto = stockPareto.set_index('Contract Name')
     
     
     
