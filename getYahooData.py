@@ -23,7 +23,7 @@ from scipy import stats
 personalRiskTolerance = .9
 budget = 10000
 
-def getOptionsData(personalRiskTolerance, budget, pareto_ax, printOutput = 'True'):
+def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     # get the up to date stock options pareto.
     # Currently hardcoded for the DOW stocks
     # inputs: personal risk tolerance, budget
@@ -110,7 +110,7 @@ def getOptionsData(personalRiskTolerance, budget, pareto_ax, printOutput = 'True
     stockPareto = stockPareto[inBudget & isInteresting]
     stockPareto.set_index('Contract Name')
     
-    stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name', ax=pareto_ax)
+    stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name')
     
     ####################
     ## Best Fit Logic ##
@@ -125,7 +125,7 @@ def getOptionsData(personalRiskTolerance, budget, pareto_ax, printOutput = 'True
         print('The best OPTION is:')
         print(bestPick)
         
-    return stockPareto, bestPick, stockParetoChart
+    return stockPareto, bestPick
 
 
 

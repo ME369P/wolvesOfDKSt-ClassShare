@@ -10,5 +10,6 @@ Import works!
 
 import getYahooData as yd
 
-#finalFrame, bestSelection, stockParetoChart = yd.getOptionsData(.9,7500)
-bidAskChart = yd.getDetailedQuote('DOW')
+finalFrame, bestSelection = yd.getOptionsData(.9,7500)
+finalFrame.to_pickle("stockParetaData0425.pk1")
+# bidAskChart = yd.getDetailedQuote('DOW')
