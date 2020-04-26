@@ -10,5 +10,8 @@ Import works!
 
 import getYahooData as yd
 
-#finalFrame, bestSelection, stockParetoChart = yd.getOptionsData(.9,7500)
-bidAskChart = yd.getDetailedQuote('DOW')
+finalFrame, bestSelection = yd.getOptionsData(.9,7500)
+#bidAskChart = yd.getDetailedQuote('DOW')
+
+# make the stockPareto chart.  This should be done in the Tk program
+stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')
