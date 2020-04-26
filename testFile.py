@@ -9,9 +9,18 @@ Import works!
 """
 
 import getYahooData as yd
+import matplotlib.pyplot as plt
+import numpy as np
+import mplcursors
+plt.ion()
 
 finalFrame, bestSelection = yd.getOptionsData(.9,7500)
 #bidAskChart = yd.getDetailedQuote('DOW')
 
 # make the stockPareto chart.  This should be done in the Tk program
-stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')
+# stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')...stockPareto not defined....
+# stockParetoChart = finalFrame.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')
+fig, ax = plt.subplots()
+ax.scatter(finalFrame['POP'], finalFrame['Potential Gain Multiple Contracts'])
+mplcursors.cursor(hover=True)
+plt.show()
