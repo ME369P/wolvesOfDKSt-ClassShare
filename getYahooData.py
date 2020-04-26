@@ -106,7 +106,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     isInteresting = stockPareto['Bid'] != 0
     #withinPersonalRiskTolerance = stockPareto['POP'] > personalRiskTolerance
     stockPareto = stockPareto[inBudget & isInteresting]
-    stockPareto.set_index('Contract Name')
+    stockPareto = stockPareto.set_index('Contract Name')
     
     stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name')
     
