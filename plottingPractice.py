@@ -262,10 +262,9 @@ def createParetoFig():
 
 def plotPareto(_pareto_fig, _pareto_ax, _pareto_df):
     """
-    plots the data in "_pareto_df" to _pareto_ax grouped by ticker
+    plots the data in "_pareto_df" to _pareto_ax grouped by ticker and color coded
     """
     _tickerGroup = []
-    _patch = []
     dct = dict()
     i = 0
     # makes a list of dataframes with common stock names. 
@@ -286,13 +285,7 @@ def plotPareto(_pareto_fig, _pareto_ax, _pareto_df):
         
         
     _pareto_ax.legend()
-    # print("colors: {}, names: {}, out: {}".format(type(colors), type(_pareto_df['Stock Name'].unique()), type(out)))
-    # handles, labels = out.get_legend_handles_labels()
-    # print(labels)
-    # out.legend(handles, labels)
-    # pareto_ax.legend(out, DF['Stock Name'])
-    
-    # return _pareto_ax
+
 
 if __name__ == '__main__':
     print('main')
@@ -305,8 +298,9 @@ if __name__ == '__main__':
     # Budget = gui_input("Enter your available budget:")
     print("risk: {} budget: {}".format(Risk, Budget))
     root = startMainGUI()
+    stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
     
-    stockPareto = pd.read_pickle('stockParetaData0425.pk1')
+    # stockPareto = pd.read_pickle('stockParetaData0425.pk1')
     pareto_fig, pareto_ax = createParetoFig()
     
     plotPareto(pareto_fig, pareto_ax, stockPareto)
