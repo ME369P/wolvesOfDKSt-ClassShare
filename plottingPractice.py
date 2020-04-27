@@ -312,13 +312,13 @@ def textOutput(_root, _Risk, _Budget, _bestPick):
     label2.grid(row=2, column=1)
     
     # print out winning option information
-    label3 = tkinter.Label(_textFrame, text = "Contract Name: {}".format(_bestPick.iloc[0]['Contract Name']))
+    label3 = tkinter.Label(_textFrame, text = "Contract Name: {}".format(_bestPick['Contract Name']))
     label3.grid(row=3, column=1)
-    label4 = tkinter.Label(_textFrame, text = "Probability of Profit: {}".format(_bestPick.iloc[0]['POP']))
+    label4 = tkinter.Label(_textFrame, text = "Probability of Profit: {}".format(_bestPick['POP']))
     label4.grid(row=4, column=1)
-    label5 = tkinter.Label(_textFrame, text = "Potential Gain: {}".format(_bestPick.iloc[0]['Potential Gain Multiple Contracts']))
+    label5 = tkinter.Label(_textFrame, text = "Potential Gain: {}".format(_bestPick['Potential Gain Multiple Contracts']))
     label5.grid(row=5, column=1)
-    label6 = tkinter.Label(_textFrame, text = "Number of Contracts: {}".format(_bestPick.iloc[0]['contractsInBudget']))
+    label6 = tkinter.Label(_textFrame, text = "Number of Contracts: {}".format(_bestPick['contractsInBudget']))
     label6.grid(row=6, column=1)
     return _textFrame
 
@@ -355,10 +355,10 @@ if __name__ == '__main__':
     
     # place bestPick figure into detail_fig
     if isinstance(bestPick, pd.Series): # checking if bestPick is a DF or series
-        stockName = bestPick['Stock Name']
+        stockName_series = bestPick
     else:
-        stockName = bestPick.iloc[0]['Stock Name']
-    detail_fig = drawBestData(detail_fig, detail_ax, stockName)
+        stockName_series = bestPick.iloc[0]
+    detail_fig = drawBestData(detail_fig, detail_ax, stockName_series['Stock Name'])
     canvas = FigureCanvasTkAgg(detail_fig, master=root)
     canvas.get_tk_widget().grid(row=1, column=2)#, rowspan=2)
     
