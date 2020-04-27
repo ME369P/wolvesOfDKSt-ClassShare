@@ -12,4 +12,5 @@ import getYahooData as yd
 
 finalFrame, bestSelection = yd.getOptionsData(.9,7500)
 finalFrame.to_pickle("stockParetaData0425.pk1")
+bestSelection.to_pickle("bestPick0425.pk1")
 # bidAskChart = yd.getDetailedQuote('DOW')

@@ -288,7 +288,7 @@ def plotPareto(_pareto_ax, _pareto_df):
 def createDetailFig():
     # initalize figure and axes objects using pyplot for pareto curve
     detail_fig = plt.Figure(figsize=(5,4), dpi=100)
-    detail_ax = pareto_fig.add_subplot(111)
+    detail_ax = detail_fig.add_subplot(111)
 
     # pareto_ax.legend()
     # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
@@ -299,7 +299,7 @@ def createDetailFig():
 
 
 def drawBestData(detail_fig, detail_ax, bestPick):
-    bidAskChart = yd.getDetailedQuote(bestPick['Stock'])
+    bidAskChart = yd.getDetailedQuote(bestPick)
     detail_fig.axes.append(bidAskChart)
     
 
@@ -315,8 +315,9 @@ if __name__ == '__main__':
     root = startMainGUI()
     
     # get stockPareto data from yd
-    stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
-    # stockPareto = pd.read_pickle('stockParetaData0425.pk1')
+    # stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
+    stockPareto = pd.read_pickle('stockParetaData0425.pk1')
+    bestPick = pd.read_pickle('bestPick0425.pk1')
     
     # create figure and axes objects for stockPareto to be placed into 
     pareto_fig, pareto_ax = createParetoFig()
@@ -330,7 +331,7 @@ if __name__ == '__main__':
     detail_fig, detail_ax = createDetailFig()
     
     # place bestPick figure into detail_fig
-    drawBestData(detail_fig, detail_ax, bestPick)
+    drawBestData(detail_fig, detail_ax, bestPick['Stock Name'].tolist()[1])
     canvas = FigureCanvasTkAgg(detail_fig, master=root)
     canvas.get_tk_widget().grid(row=2, column=1)#, rowspan=2)
     
