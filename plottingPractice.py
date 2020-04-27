@@ -248,7 +248,7 @@ def gui_input(prompt1, prompt2):
 
 def createParetoFig():
     # initalize figure and axes objects using pyplot for pareto curve
-    pareto_fig = plt.Figure(figsize=(8,7), dpi=100)
+    pareto_fig = plt.Figure(figsize=(8,7.5), dpi=100)
     pareto_ax = pareto_fig.add_subplot(111)
     pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
     pareto_ax.set_xlabel('Probability of Profit (%)')
@@ -287,7 +287,7 @@ def plotPareto(_pareto_ax, _pareto_df):
 
 def createDetailFig():
     # initalize figure and axes objects using pyplot for pareto curve
-    detail_fig = plt.Figure(figsize=(5,4), dpi=100)
+    detail_fig = plt.Figure(figsize=(7.50,4.00), dpi=100)
     detail_ax = detail_fig.add_subplot(111)
 
     # pareto_ax.legend()
@@ -299,10 +299,18 @@ def createDetailFig():
 
 
 def drawBestData(detail_fig, detail_ax, bestPick):
-    detail_ax = yd.getDetailedQuote(bestPick)
+    yd.getDetailedQuote(bestPick, detail_ax)
     detail_fig.axes.append(detail_ax)
     return detail_fig
+
+def textOutput(_root, _Risk, _Budget, ):
+    _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
+    label1 = tkinter.Label(_textFrame, text="Risk is: {}%".format(_Risk))
+    label1.grid(row=1, column=1)
+    label2 = tkinter.Label(_textFrame, text="Budget is: ${}".format(Budget))
+    label2.grid(row=2, column=1)
     
+    return _textFrame
 
 
 if __name__ == '__main__':
@@ -312,8 +320,12 @@ if __name__ == '__main__':
     Risk, Budget = gui_input("Enter your desired risk:", "Enter your available budget:")
     print("risk: {} budget: {}".format(Risk, Budget))
     
-    # create main window
+    # create main window and configure grid size
     root = startMainGUI()
+    root.grid_columnconfigure(1,minsize=750)
+    root.grid_rowconfigure(1,minsize=400)
+    root.grid_columnconfigure(2,minsize=750)
+    root.grid_rowconfigure(2,minsize=400)
     
     # get stockPareto data from yd
     # stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
@@ -326,7 +338,7 @@ if __name__ == '__main__':
     #place stockPareto data into the axes created above
     plotPareto(pareto_ax, stockPareto)
     canvas = FigureCanvasTkAgg(pareto_fig, master=root)
-    canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)
+    canvas.get_tk_widget().grid(row=1, column=1, rowspan=2)
     
     # create figure and axes objects for detail plot to be placed into 
     detail_fig, detail_ax = createDetailFig()
@@ -334,9 +346,12 @@ if __name__ == '__main__':
     # place bestPick figure into detail_fig
     detail_fig = drawBestData(detail_fig, detail_ax, bestPick['Stock Name'].tolist()[1])
     canvas = FigureCanvasTkAgg(detail_fig, master=root)
-    canvas.get_tk_widget().grid(row=2, column=4)#, rowspan=2)
+    canvas.get_tk_widget().grid(row=1, column=2)#, rowspan=2)
     
-    
+    # create text frame
+    testFrame = textOutput(root, Risk, Budget, bestPick.tolist()[1])
+    testFrame.grid(row=2, column=2, sticky = "NESW")
+    # canvas.get_tk_widget()
 
     
     # # initalize figure and axes objects using pyplot for pareto curve

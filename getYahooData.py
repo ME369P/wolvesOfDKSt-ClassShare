@@ -129,7 +129,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
 
 
-def getDetailedQuote(stock):
+def getDetailedQuote(stock, ax1):
     # get the detailded bid/ask quote data for charting
     # input : stock ticker of the option of interest
     # for use with bestPick frame:
@@ -142,7 +142,7 @@ def getDetailedQuote(stock):
     
     stockOptions = options.get_puts(stock).plot(x='Strike',y=['Bid','Ask'], 
                                                 xlim=[.5*currentPrice,1.5*currentPrice],
-                                                title='Bid/Ask Call Spread for {}'.format(stock))
+                                                title='Bid/Ask Call Spread for {}'.format(stock), ax = ax1)
     stockOptions.axvline(currentPrice, color='green', ls='--')
 
     return stockOptions
