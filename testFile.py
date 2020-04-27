@@ -19,8 +19,14 @@ finalFrame, bestSelection = yd.getOptionsData(.9,7500)
 
 # make the stockPareto chart.  This should be done in the Tk program
 # stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')...stockPareto not defined....
-# stockParetoChart = finalFrame.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')
-fig, ax = plt.subplots()
-ax.scatter(finalFrame['POP'], finalFrame['Potential Gain Multiple Contracts'])
-mplcursors.cursor(hover=True)
+
+# fig, ax = plt.subplots()
+# ax.scatter(finalFrame['POP'], finalFrame['Potential Gain Multiple Contracts'])
+# mplcursors.cursor(hover=True)
+# plt.show()
+
+# show contract name
+ax = finalFrame.plot.scatter(x='POP',y='Potential Gain Multiple Contracts')
+mplcursors.cursor(hover=True).connect(
+    "add", lambda sel: sel.annotation.set_text(finalFrame.index[sel.target.index]))
 plt.show()

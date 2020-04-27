@@ -19,7 +19,7 @@ df = DataFrame(
     columns=["name", "height", "weight"])
 
 df.plot.scatter("height", "weight")
-mplcursors.cursor().connect(
+mplcursors.cursor(hover = True).connect(
     "add", lambda sel: sel.annotation.set_text(df["name"][sel.target.index]))
 plt.show()
 
