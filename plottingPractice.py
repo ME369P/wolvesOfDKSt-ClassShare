@@ -286,27 +286,35 @@ def plotPareto(_pareto_fig, _pareto_ax, _pareto_df):
         
     _pareto_ax.legend()
 
+def drawBestData():
+    
+
 
 if __name__ == '__main__':
     print('main')
-    # textFrame, root = startGUI()
-    # Risk_num, Budget_num = GetInputs(textFrame)
-    # stored = store_data()
-    # print(stored)
-    Risk, Budget = gui_input("Enter your desired risk:", "Enter your available budget:")
-    # Risk = gui_input("Enter your desired risk:")
-    # Budget = gui_input("Enter your available budget:")
-    print("risk: {} budget: {}".format(Risk, Budget))
-    root = startMainGUI()
-    stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
     
+    # create window to ask for user inputs
+    Risk, Budget = gui_input("Enter your desired risk:", "Enter your available budget:")
+    print("risk: {} budget: {}".format(Risk, Budget))
+    
+    # create main window
+    root = startMainGUI()
+    
+    # get stockPareto data from yd
+    stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
     # stockPareto = pd.read_pickle('stockParetaData0425.pk1')
+    
+    # create figure and axes objects to be placed into 
     pareto_fig, pareto_ax = createParetoFig()
     
+    #place stockPareto data into the axes created above
     plotPareto(pareto_fig, pareto_ax, stockPareto)
-    
     canvas = FigureCanvasTkAgg(pareto_fig, master=root)
     canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)
+    
+    
+    
+    
     
 
     

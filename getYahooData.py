@@ -110,7 +110,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     stockPareto = stockPareto[inBudget & isInteresting]
     stockPareto.set_index('Contract Name')
     
-    stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name')
+    # stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name')
     
     ####################
     ## Best Fit Logic ##
@@ -129,7 +129,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
 
 
-def getDetailedQuote(stock, tk_ax):
+def getDetailedQuote(stock):
     # get the detailded bid/ask quote data for charting
     # input : stock ticker of the option of interest
     # for use with bestPick frame:
