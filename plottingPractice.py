@@ -260,7 +260,7 @@ def createParetoFig():
     # canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)#pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
     return pareto_fig, pareto_ax
 
-def plotPareto(_pareto_fig, _pareto_ax, _pareto_df):
+def plotPareto(_pareto_ax, _pareto_df):
     """
     plots the data in "_pareto_df" to _pareto_ax grouped by ticker and color coded
     """
@@ -280,13 +280,27 @@ def plotPareto(_pareto_fig, _pareto_ax, _pareto_df):
         
     # prints each dataseries and use dictionary key as label for creating legend
     for i,c in zip(dct, colors):
-        print("i: {}".format(i))
         _pareto_ax.plot(*dct[i], label=i, color = c, marker='*', linestyle='None')
         
         
     _pareto_ax.legend()
 
-def drawBestData():
+def createDetailFig():
+    # initalize figure and axes objects using pyplot for pareto curve
+    detail_fig = plt.Figure(figsize=(5,4), dpi=100)
+    detail_ax = pareto_fig.add_subplot(111)
+
+    # pareto_ax.legend()
+    # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
+    # put pareto curve axes into tkinter GUI
+    # canvas = FigureCanvasTkAgg(pareto_fig, master=root)
+    # canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)#pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
+    return detail_fig, detail_ax
+
+
+def drawBestData(detail_fig, detail_ax, bestPick):
+    bidAskChart = yd.getDetailedQuote(bestPick['Stock'])
+    detail_fig.axes.append(bidAskChart)
     
 
 
@@ -304,16 +318,21 @@ if __name__ == '__main__':
     stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
     # stockPareto = pd.read_pickle('stockParetaData0425.pk1')
     
-    # create figure and axes objects to be placed into 
+    # create figure and axes objects for stockPareto to be placed into 
     pareto_fig, pareto_ax = createParetoFig()
     
     #place stockPareto data into the axes created above
-    plotPareto(pareto_fig, pareto_ax, stockPareto)
+    plotPareto(pareto_ax, stockPareto)
     canvas = FigureCanvasTkAgg(pareto_fig, master=root)
     canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)
     
+    # create figure and axes objects for detail plot to be placed into 
+    detail_fig, detail_ax = createDetailFig()
     
-    
+    # place bestPick figure into detail_fig
+    drawBestData(detail_fig, detail_ax, bestPick)
+    canvas = FigureCanvasTkAgg(detail_fig, master=root)
+    canvas.get_tk_widget().grid(row=2, column=1)#, rowspan=2)
     
     
 
