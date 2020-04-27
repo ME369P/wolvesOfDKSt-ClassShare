@@ -142,8 +142,7 @@ def getDetailedQuote(stock):
     
     stockOptions = options.get_puts(stock).plot(x='Strike',y=['Bid','Ask'], 
                                                 xlim=[.5*currentPrice,1.5*currentPrice],
-                                                title='Bid/Ask Call Spread for {}'.format(stock),
-                                                ax=tk_ax)
+                                                title='Bid/Ask Call Spread for {}'.format(stock))
     stockOptions.axvline(currentPrice, color='green', ls='--')
 
     return stockOptions

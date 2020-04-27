@@ -299,8 +299,9 @@ def createDetailFig():
 
 
 def drawBestData(detail_fig, detail_ax, bestPick):
-    bidAskChart = yd.getDetailedQuote(bestPick)
-    detail_fig.axes.append(bidAskChart)
+    detail_ax = yd.getDetailedQuote(bestPick)
+    detail_fig.axes.append(detail_ax)
+    return detail_fig
     
 
 
@@ -331,9 +332,9 @@ if __name__ == '__main__':
     detail_fig, detail_ax = createDetailFig()
     
     # place bestPick figure into detail_fig
-    drawBestData(detail_fig, detail_ax, bestPick['Stock Name'].tolist()[1])
+    detail_fig = drawBestData(detail_fig, detail_ax, bestPick['Stock Name'].tolist()[1])
     canvas = FigureCanvasTkAgg(detail_fig, master=root)
-    canvas.get_tk_widget().grid(row=2, column=1)#, rowspan=2)
+    canvas.get_tk_widget().grid(row=2, column=4)#, rowspan=2)
     
     
 
