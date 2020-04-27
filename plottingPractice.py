@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 import matplotlib.cm as cm
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import matplotlib
 matplotlib.use("TkAgg")
@@ -78,7 +79,7 @@ startFlag = False
 #     Budget_num = float(Budget.get())
 #     return Risk_num, Budget_num
 
-def startGUI():
+def startMainGUI():
     _root = tkinter.Tk()
     _root.title("Put Option Strategy")
     _root.geometry('1500x800+100+100')
@@ -101,17 +102,17 @@ def _setup_inputGUI(self):
     go.grid(row=3, column=1, columnspan=2)
 
 
-def startTextInput(_root):
-    # initialize TK GUI window
+# def startTextInput(_root):
+#     # initialize TK GUI window
 
     
-    # input_root = tkinter.Tk()
-    # input_root = tkinter.Toplevel()
-    # input_root.wm_title("Inputs")
-    _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
-    _textFrame.pack()
+#     # input_root = tkinter.Tk()
+#     # input_root = tkinter.Toplevel()
+#     # input_root.wm_title("Inputs")
+#     _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
+#     _textFrame.pack()
 
-    return _textFrame
+#     return _textFrame
 
 
 
@@ -119,11 +120,11 @@ def startTextInput(_root):
 ############# Get Inputs ##################
 ###########################################
 
-def store_data(Risk_num, Budget_num, textFrame):
-    print("Risk: {}\nBudget: {}".format(Risk_num, Budget_num))
-    tkinter.Label(textFrame, text="Risk: {}\nBudget: {}".format(Risk_num, Budget_num)).grid(row=4, column=1, columnspan=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-    startFlag = True
-    return True
+# def store_data(Risk_num, Budget_num, textFrame):
+#     print("Risk: {}\nBudget: {}".format(Risk_num, Budget_num))
+#     tkinter.Label(textFrame, text="Risk: {}\nBudget: {}".format(Risk_num, Budget_num)).grid(row=4, column=1, columnspan=2)#side=tkinter.LEFT, anchor=tkinter.SW)
+#     startFlag = True
+#     return True
 
 def GetInputs(_textFrame):
     tkinter.Label(_textFrame, text="Risk Level").grid(row=1, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
@@ -169,6 +170,7 @@ def printParetoCurve(self):
     # stockPareto, bestPick = yd.getOptionsData(0.9, 10000)
     stockPareto = pd.read_pickle('stockParetaData0425.pk1')
     stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name', ax = pareto_ax)
+    pareto_ax.legend()
     pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
     pareto_ax.set_xlabel('Probability of Profit (%)')
     pareto_ax.set_ylabel('Premium Collected')
@@ -182,17 +184,6 @@ def printParetoCurve(self):
 # canvas.create_oval(10, 10, 80, 80, outline="#f11",fill="#1f1", width=2)
 
 
-
-
-
-
-
-
-# # plot data to respective axes objects
-# # pareto_ax.plot(t, s)
-
-
-# ##
 
 
 
@@ -218,8 +209,90 @@ def refresh():
 # refresh.pack(side=tkinter.LEFT, anchor=tkinter.SW)
 
 
+def gui_input(prompt1, prompt2):
 
+    _root = tkinter.Tk()
+    _root.title("User Details")
+    # _root.geometry('1500x800+100+100')
+    # this will contain the entered string, and will
+    # still exist after the window is destroyed
+    var1 = tkinter.StringVar()
+    var2 = tkinter.StringVar()
 
+    # create the GUI
+    label1 = tkinter.Label(_root, text=prompt1)
+    entry1 = tkinter.Entry(_root, textvariable=var1)
+    label1.grid(row=1, column=1)
+    entry1.grid(row=1, column=2)
+    
+    label2 = tkinter.Label(_root, text=prompt2)
+    entry2 = tkinter.Entry(_root, textvariable=var2)
+    label2.grid(row=2, column=1)
+    entry2.grid(row=2, column=2)
+    
+    go = tkinter.Button(_root, text='Enter')#, command=store_data)
+    go.grid(row=3, column=1, columnspan=2)
+
+    # Let the user press the return key to destroy the gui 
+    go.bind("<Button-1>", lambda event: _root.destroy())
+
+    # this will block until the window is destroyed
+    _root.mainloop()
+
+    # after the window has been destroyed, we can't access
+    # the entry widget, but we _can_ access the associated
+    # variable
+    value1 = var1.get()
+    value2 = var2.get()
+    return value1, value2
+
+def createParetoFig():
+    # initalize figure and axes objects using pyplot for pareto curve
+    pareto_fig = plt.Figure(figsize=(8,7), dpi=100)
+    pareto_ax = pareto_fig.add_subplot(111)
+    pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
+    pareto_ax.set_xlabel('Probability of Profit (%)')
+    pareto_ax.set_ylabel('Premium Collected')
+    # pareto_ax.legend()
+    # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
+    # put pareto curve axes into tkinter GUI
+    # canvas = FigureCanvasTkAgg(pareto_fig, master=root)
+    # canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)#pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
+    return pareto_fig, pareto_ax
+
+def plotPareto(_pareto_fig, _pareto_ax, _pareto_df):
+    """
+    plots the data in "_pareto_df" to _pareto_ax grouped by ticker
+    """
+    _tickerGroup = []
+    _patch = []
+    dct = dict()
+    i = 0
+    # makes a list of dataframes with common stock names. 
+    for ticker in _pareto_df['Stock Name'].unique():
+        _tickerGroup.append(_pareto_df[_pareto_df['Stock Name'] == ticker])
+        
+    colors = [tuple(l) for l in cm.rainbow(np.linspace(0, 1, len(_tickerGroup)))] # unique color for each option series
+    
+    # creates a dictionary in form of {stock name: tuple(['POP'], ['Gain'])}
+    for DF, c in zip(_tickerGroup, colors):
+        dct[_pareto_df['Stock Name'].unique()[i]]= (DF['POP'].tolist(), DF['Potential Gain Multiple Contracts'].tolist())
+        i+=1
+        
+    # prints each dataseries and use dictionary key as label for creating legend
+    for i,c in zip(dct, colors):
+        print("i: {}".format(i))
+        _pareto_ax.plot(*dct[i], label=i, color = c, marker='*', linestyle='None')
+        
+        
+    _pareto_ax.legend()
+    # print("colors: {}, names: {}, out: {}".format(type(colors), type(_pareto_df['Stock Name'].unique()), type(out)))
+    # handles, labels = out.get_legend_handles_labels()
+    # print(labels)
+    # out.legend(handles, labels)
+    # pareto_ax.legend(out, DF['Stock Name'])
+    
+    # return _pareto_ax
 
 if __name__ == '__main__':
     print('main')
@@ -227,17 +300,37 @@ if __name__ == '__main__':
     # Risk_num, Budget_num = GetInputs(textFrame)
     # stored = store_data()
     # print(stored)
+    Risk, Budget = gui_input("Enter your desired risk:", "Enter your available budget:")
+    # Risk = gui_input("Enter your desired risk:")
+    # Budget = gui_input("Enter your available budget:")
+    print("risk: {} budget: {}".format(Risk, Budget))
+    root = startMainGUI()
     
-    root = startGUI()
-    textFrame = startTextInput(root)
-    Risk, Budger = GetInputs(textFrame)
+    stockPareto = pd.read_pickle('stockParetaData0425.pk1')
+    pareto_fig, pareto_ax = createParetoFig()
+    
+    plotPareto(pareto_fig, pareto_ax, stockPareto)
+    
+    canvas = FigureCanvasTkAgg(pareto_fig, master=root)
+    canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)
+    
+
+    
+    # # initalize figure and axes objects using pyplot for pareto curve
+    # pareto_fig = plt.Figure(figsize=(8,7), dpi=100)
+    # pareto_ax = pareto_fig.add_subplot(111)
+    # pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
+    # pareto_ax.set_xlabel('Probability of Profit (%)')
+    # pareto_ax.set_ylabel('Premium Collected')
+    # # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
+    # # put pareto curve axes into tkinter GUI
+    # canvas = FigureCanvasTkAgg(pareto_fig, master=root)
+    # canvas.get_tk_widget().pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
     
     
     
     
-    # stockPareto = pd.read_pickle('stockParetaData0425.pk1')
-    # root = plotOptions(stockPareto)
-    # textFrame = plotOptions.startGUI(root)
+    
     
     # tkinter.Label(textFrame, text="Risk Level").grid(row=1, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
     # Risk = tkinter.Entry(textFrame)
