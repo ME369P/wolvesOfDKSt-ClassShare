@@ -298,18 +298,28 @@ def createDetailFig():
     return detail_fig, detail_ax
 
 
-def drawBestData(detail_fig, detail_ax, bestPick):
-    yd.getDetailedQuote(bestPick, detail_ax)
-    detail_fig.axes.append(detail_ax)
-    return detail_fig
+def drawBestData(_detail_fig, _detail_ax, _bestPick):
+    yd.getDetailedQuote(_bestPick, _detail_ax)
+    _detail_fig.axes.append(_detail_ax)
+    return _detail_fig
 
-def textOutput(_root, _Risk, _Budget, ):
+def textOutput(_root, _Risk, _Budget, _bestPick):
     _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
-    label1 = tkinter.Label(_textFrame, text="Risk is: {}%".format(_Risk))
+    # print out risk and budget levels
+    label1 = tkinter.Label(_textFrame, text="Risk is: {}%".format(float(_Risk)*100))
     label1.grid(row=1, column=1)
     label2 = tkinter.Label(_textFrame, text="Budget is: ${}".format(Budget))
     label2.grid(row=2, column=1)
     
+    # print out winning option information
+    label3 = tkinter.Label(_textFrame, text = "Contract Name: {}".format(_bestPick.iloc[0]['Contract Name']))
+    label3.grid(row=3, column=1)
+    label4 = tkinter.Label(_textFrame, text = "Probability of Profit: {}".format(_bestPick.iloc[0]['POP']))
+    label4.grid(row=4, column=1)
+    label5 = tkinter.Label(_textFrame, text = "Potential Gain: {}".format(_bestPick.iloc[0]['Potential Gain Multiple Contracts']))
+    label5.grid(row=5, column=1)
+    label6 = tkinter.Label(_textFrame, text = "Number of Contracts: {}".format(_bestPick.iloc[0]['contractsInBudget']))
+    label6.grid(row=6, column=1)
     return _textFrame
 
 
@@ -328,9 +338,9 @@ if __name__ == '__main__':
     root.grid_rowconfigure(2,minsize=400)
     
     # get stockPareto data from yd
-    # stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
-    stockPareto = pd.read_pickle('stockParetaData0425.pk1')
-    bestPick = pd.read_pickle('bestPick0425.pk1')
+    stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
+    # stockPareto = pd.read_pickle('stockParetaData0425.pk1')
+    # bestPick = pd.read_pickle('bestPick0425.pk1')
     
     # create figure and axes objects for stockPareto to be placed into 
     pareto_fig, pareto_ax = createParetoFig()
@@ -344,12 +354,16 @@ if __name__ == '__main__':
     detail_fig, detail_ax = createDetailFig()
     
     # place bestPick figure into detail_fig
-    detail_fig = drawBestData(detail_fig, detail_ax, bestPick['Stock Name'].tolist()[1])
+    if isinstance(bestPick, pd.Series): # checking if bestPick is a DF or series
+        stockName = bestPick['Stock Name']
+    else:
+        stockName = bestPick.iloc[0]['Stock Name']
+    detail_fig = drawBestData(detail_fig, detail_ax, stockName)
     canvas = FigureCanvasTkAgg(detail_fig, master=root)
     canvas.get_tk_widget().grid(row=1, column=2)#, rowspan=2)
     
     # create text frame
-    testFrame = textOutput(root, Risk, Budget, bestPick.tolist()[1])
+    testFrame = textOutput(root, Risk, Budget, bestPick)
     testFrame.grid(row=2, column=2, sticky = "NESW")
     # canvas.get_tk_widget()
 
