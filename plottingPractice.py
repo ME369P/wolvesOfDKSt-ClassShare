@@ -37,31 +37,6 @@ def startMainGUI():
 ###########################################
 
 
-def GetInputs(_textFrame):
-    tkinter.Label(_textFrame, text="Risk Level").grid(row=1, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
-    Risk = tkinter.Entry(_textFrame)
-    Risk.grid(row=1, column=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-    tkinter.Label(_textFrame, text="Budget").grid(row=2, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
-    Budget = tkinter.Entry(_textFrame)
-    Budget.grid(row=2, column=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-    Risk_num = Risk.get()
-    Budget_num = Budget.get()
-    go = tkinter.Button(_textFrame, text='Enter', command=store_data(Risk_num, Budget_num, _textFrame))
-    go.grid(row=3, column=1, columnspan=2)
-    
-    return Risk_num, Budget_num
-
-
-
-
-
-
-############################################
-######### Import data and Plot #############
-############################################
-
-
-
 def gui_input(prompt1, prompt2):
 
     _root = tkinter.Tk()
@@ -97,7 +72,16 @@ def gui_input(prompt1, prompt2):
     # variable
     value1 = var1.get()
     value2 = var2.get()
+    
+    
     return value1, value2
+
+
+
+###################################################
+######### Import data and Plot Pareto #############
+###################################################
+
 
 def createParetoFig(_pareto_df):
     # initalize figure and axes objects using pyplot for pareto curve
@@ -109,13 +93,14 @@ def createParetoFig(_pareto_df):
     _pareto_df.plot.scatter(x='POP',y='Potential Gain Multiple Contracts', ax = pareto_ax)
     # ax = finalFrame.plot(kind = 'scatter', x='POP',y='Potential Gain Multiple Contracts')
 
-    
-    # pareto_ax.legend()
-    # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
-    # put pareto curve axes into tkinter GUI
-    # canvas = FigureCanvasTkAgg(pareto_fig, master=root)
-    # canvas.get_tk_widget().grid(row=1, column=2, rowspan=2)#pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
+  
     return pareto_fig, pareto_ax
+
+
+
+###################################################
+######### Color coding pareto #####################
+###################################################
 
 def plotPareto(_pareto_ax, _pareto_df):
     """
@@ -151,6 +136,10 @@ def plotPareto(_pareto_ax, _pareto_df):
         
     # _pareto_ax.legend()
 
+###############################################################################
+######### Creating and plot figure / axes for bid/ask spread plot #############
+###############################################################################
+
 
 def createDetailFig():
     # initalize figure and axes objects using pyplot for pareto curve
@@ -169,6 +158,12 @@ def drawBestData(_detail_fig, _detail_ax, _bestPick):
     yd.getDetailedQuote(_bestPick, _detail_ax)
     _detail_fig.axes.append(_detail_ax)
     return _detail_fig
+
+
+##########################################################################
+######### Print text to screen with contract details from DF #############
+##########################################################################
+
 
 def textOutput(_root, _Risk, _Budget, _bestPick):
     _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
@@ -189,6 +184,10 @@ def textOutput(_root, _Risk, _Budget, _bestPick):
     label6.grid(row=6, column=1)
     return _textFrame
 
+
+####################################
+######### Main Method  #############
+####################################
 
 if __name__ == '__main__':
     print('main')
@@ -232,41 +231,8 @@ if __name__ == '__main__':
     # create text frame
     testFrame = textOutput(root, Risk, Budget, bestPick)
     testFrame.grid(row=2, column=2, sticky = "NESW")
-    # canvas.get_tk_widget()
 
     
-    # # initalize figure and axes objects using pyplot for pareto curve
-    # pareto_fig = plt.Figure(figsize=(8,7), dpi=100)
-    # pareto_ax = pareto_fig.add_subplot(111)
-    # pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
-    # pareto_ax.set_xlabel('Probability of Profit (%)')
-    # pareto_ax.set_ylabel('Premium Collected')
-    # # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
-    # # put pareto curve axes into tkinter GUI
-    # canvas = FigureCanvasTkAgg(pareto_fig, master=root)
-    # canvas.get_tk_widget().pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
-    
-    
-    
-    
-    
-    
-    # tkinter.Label(textFrame, text="Risk Level").grid(row=1, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
-    # Risk = tkinter.Entry(textFrame)
-    # Risk.grid(row=1, column=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-    # tkinter.Label(textFrame, text="Budget").grid(row=2, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
-    # Budget = tkinter.Entry(textFrame)
-    # Budget.grid(row=2, column=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-    # Risk_num = Risk.get()
-    # Budget_num = Budget.get()
-    # go = tkinter.Button(textFrame, text='Enter', command=plotOptions.store_data(Risk_num, Budget_num, textFrame))
-    # go.grid(row=3, column=1, columnspan=2)
-    # # Risk, Budget = plotOptions.GetInputs(textFrame)
-    
-    
-    
-    #getOptionsData(personalRiskTolerance, budget, printOutput = False)
-    # charty = getDetailedQuote('DOW', ax)
     tkinter.mainloop()
 
 
