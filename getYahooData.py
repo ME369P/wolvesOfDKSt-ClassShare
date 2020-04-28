@@ -107,8 +107,13 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     stockPareto = stockPareto[inBudget & isInteresting]
     stockPareto = stockPareto.set_index('Contract Name')
 
-    stockPareto['printString'] = (stockPareto['Stock Name']+',$'+stockPareto['Strike'].astype(str)+'0 STRIKE\n' +
-                                'Potential Gain = '+stockPareto['Potential Gain Multiple Contracts'].astype(str)+'0')
+    # this is the field which will show in the interactive plot
+    stockPareto['printString'] = ('Stock: ' + stockPareto['Stock Name']+'\n'
+                                  'Strike Price = $'+ round(stockPareto['Strike'],2).astype(str)+'\n'+
+                                  'Current Price = $' + round(stockPareto['Current Price'],2).astype(str) + '\n' +
+                                  'Potential Gain = $'+ round(stockPareto['Potential Gain Multiple Contracts'],2).astype(str)+'\n' + 
+                                  'ROI = ' + round(((stockPareto['Potential Gain Multiple Contracts']/budget) * 100),2).astype(str) + '%\n' +
+                                  'Probability of Profit = ' + round(stockPareto['POP'],2).astype(str))
     
     ####################
     ## Best Fit Logic ##
