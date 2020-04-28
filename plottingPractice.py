@@ -14,9 +14,6 @@ import matplotlib
 matplotlib.use("TkAgg")
 matplotlib.use("TkAgg")
 
-
-
-
 import getYahooData as yd
 
 
@@ -55,11 +52,6 @@ def _setup_inputGUI(self):
 ############# Get Inputs ##################
 ###########################################
 
-# def store_data(Risk_num, Budget_num, textFrame):
-#     print("Risk: {}\nBudget: {}".format(Risk_num, Budget_num))
-#     tkinter.Label(textFrame, text="Risk: {}\nBudget: {}".format(Risk_num, Budget_num)).grid(row=4, column=1, columnspan=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-#     startFlag = True
-#     return True
 
 def GetInputs(_textFrame):
     tkinter.Label(_textFrame, text="Risk Level").grid(row=1, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
@@ -77,10 +69,6 @@ def GetInputs(_textFrame):
 
 
 
-
-# T = tkinter.Text(root, height=2, width=30)
-# T.pack()
-# T.insert(tkinter.END, Risk_num)
 
 
 
@@ -116,18 +104,7 @@ def printParetoCurve(self):
     canvas.get_tk_widget().pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
 
 
-# canvas.create_oval(10, 10, 80, 80, outline="#f11",fill="#1f1", width=2)
 
-
-
-
-
-
-
-# # adds in toolbar for paretoCurve plot
-# toolbar = NavigationToolbar2Tk(canvas, root)
-# toolbar.update()
-# canvas._tkcanvas.pack(side=tkinter.LEFT)#, fill=tkinter.BOTH, expand=1)
 
 
 def callback():
