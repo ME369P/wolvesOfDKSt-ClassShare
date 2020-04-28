@@ -11,6 +11,7 @@ Import works!
 import getYahooData as yd
 
 finalFrame, bestSelection = yd.getOptionsData(.9,7500)
-finalFrame.to_pickle("stockParetaData0425.pk1")
-bestSelection.to_pickle("bestPick0425.pk1")
-# bidAskChart = yd.getDetailedQuote('DOW')
+#bidAskChart = yd.getDetailedQuote('DOW')
+
+# make the stockPareto chart.  This should be done in the Tk program
+stockParetoChart = stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts')
