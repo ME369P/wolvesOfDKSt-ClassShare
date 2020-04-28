@@ -97,7 +97,6 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     stockPareto['contractsInBudget'] = np.floor(budget/(stockPareto['Strike']*100))
     stockPareto['Potential Gain'] = ((stockPareto['Ask'] + stockPareto['Bid'])/2) * 100
     stockPareto['Potential Gain Multiple Contracts'] = stockPareto['Potential Gain'] * stockPareto['contractsInBudget']
-
     ###########################
     ### plotting the pareto ###
     ###########################
@@ -108,8 +107,9 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     stockPareto = stockPareto[inBudget & isInteresting]
     stockPareto = stockPareto.set_index('Contract Name')
 
-
-
+    stockPareto['printString'] = (stockPareto['Stock Name']+',$'+stockPareto['Strike'].astype(str)+'0 STRIKE\n' +
+                                'Potential Gain = '+stockPareto['Potential Gain Multiple Contracts'].astype(str)+'0')
+    
     ####################
     ## Best Fit Logic ##
     ####################
@@ -127,7 +127,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
 
 
-def getDetailedQuote(stock, ax1):
+def getDetailedQuote(stock, ax1 = None):
     # get the detailded bid/ask quote data for charting
     # input : stock ticker of the option of interest
     # for use with bestPick frame:
@@ -140,12 +140,12 @@ def getDetailedQuote(stock, ax1):
 
     stockOptions = options.get_puts(stock).plot(x='Strike',y=['Bid','Ask'],
                                                 xlim=[.5*currentPrice,1.5*currentPrice],
-                                                title='Bid/Ask Call Spread for {}'.format(stock), ax = ax1)
+                                                title='Bid/Ask Put Spread for {}'.format(stock), ax = ax1)
     stockOptions.axvline(currentPrice, color='green', ls='--')
 
     return stockOptions
 
 
 if __name__ == '__main__':
-    getOptionsData(personalRiskTolerance, budget, printOutput = True)
-    #chart = getDetailedQuote('DOW')
+    stockPareto, bestPick = getOptionsData(personalRiskTolerance, budget, printOutput = True)
+    chart = getDetailedQuote('DOW')
