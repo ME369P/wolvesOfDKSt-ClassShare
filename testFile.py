@@ -27,6 +27,7 @@ finalFrame, bestSelection = yd.getOptionsData(.9,7500)
 
 # show contract name
 ax = finalFrame.plot.scatter(x='POP',y='Potential Gain Multiple Contracts')
+# ax = finalFrame.plot(kind = 'scatter', x='POP',y='Potential Gain Multiple Contracts')
 mplcursors.cursor(hover=True).connect(
     "add", lambda sel: sel.annotation.set_text(finalFrame.index[sel.target.index]))
 plt.show()
