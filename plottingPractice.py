@@ -20,7 +20,7 @@ plt.ion()
 def startMainGUI():
     _root = tkinter.Tk()
     _root.title("Put Option Strategy")
-    _root.geometry('1500x800+100+100')
+    _root.geometry('1200x700+100+100')
     return _root
 
 ###########################################
@@ -76,7 +76,7 @@ def gui_input(prompt1, prompt2):
 
 def createParetoFig(_pareto_df):
     # initalize figure and axes objects using pyplot for pareto curve
-    pareto_fig = Figure(figsize=(8,7.5), dpi=100)
+    pareto_fig = Figure(figsize=(6,6), dpi=100)
     pareto_ax = pareto_fig.add_subplot(111)
     pareto_ax.set_title('Pareto Curve of Available Options')
     pareto_ax.set_xlabel('Probability of Profit (%)')
@@ -134,7 +134,7 @@ def plotPareto(_pareto_ax, _pareto_df):
 
 def createDetailFig():
     # initalize figure and axes objects using pyplot for pareto curve
-    detail_fig = Figure(figsize=(7.50,4.00), dpi=100)
+    detail_fig = Figure(figsize=(6,6), dpi=100)
     detail_ax = detail_fig.add_subplot(111)
 
     # pareto_ax.legend()
@@ -159,20 +159,22 @@ def drawBestData(_detail_fig, _detail_ax, _bestPick):
 def textOutput(_root, _Risk, _Budget, _bestPick):
     _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
     # print out risk and budget levels
-    label1 = tkinter.Label(_textFrame, text="Risk is: {}%".format(float(_Risk)*100))
+    label1 = tkinter.Label(_textFrame, borderwidth = 3, text="Risk is: {}%".format(float(_Risk)*100))
     label1.grid(row=1, column=1)
-    label2 = tkinter.Label(_textFrame, text="Budget is: ${}".format(Budget))
-    label2.grid(row=2, column=1)
+    label2 = tkinter.Label(_textFrame, borderwidth = 3, text="Budget is: ${}".format(Budget))
+    label2.grid(row=1, column=2)
     
     # print out winning option information
-    label3 = tkinter.Label(_textFrame, text = "Contract Name: {}".format(_bestPick.name))
-    label3.grid(row=3, column=1)
-    label4 = tkinter.Label(_textFrame, text = "Probability of Profit: {}".format(_bestPick['POP']))
-    label4.grid(row=4, column=1)
-    label5 = tkinter.Label(_textFrame, text = "Potential Gain: ${}".format(_bestPick['Potential Gain Multiple Contracts']))
-    label5.grid(row=5, column=1)
-    label6 = tkinter.Label(_textFrame, text = "Number of Contracts: {}".format(_bestPick['contractsInBudget']))
-    label6.grid(row=6, column=1)
+    label3 = tkinter.Label(_textFrame, borderwidth = 3, text = "Contract Name: {}".format(_bestPick.name))
+    label3.grid(row=1, column=3)
+    label4 = tkinter.Label(_textFrame, borderwidth = 3, text = "Probability of Profit: {}".format(_bestPick['POP']))
+    label4.grid(row=1, column=4)
+    label5 = tkinter.Label(_textFrame, borderwidth = 3, text = "Potential Gain: ${}".format(_bestPick['Potential Gain Multiple Contracts']))
+    label5.grid(row=1, column=5)
+    label6 = tkinter.Label(_textFrame, borderwidth = 3, text = "Number of Contracts: {}".format(_bestPick['contractsInBudget']))
+    label6.grid(row=1, column=6)
+    label7 = tkinter.Label(_textFrame, text = "THIS IS NOT FINANCIAL ADVICE", font=("Courier", 16), fg="red")
+    label7.grid(row=2, column=1, columnspan = 6)
     return _textFrame
 
 
@@ -189,10 +191,10 @@ if __name__ == '__main__':
     
     # create main window and configure grid size
     root = startMainGUI()
-    root.grid_columnconfigure(1,minsize=750)
-    root.grid_rowconfigure(1,minsize=400)
-    root.grid_columnconfigure(2,minsize=750)
-    root.grid_rowconfigure(2,minsize=400)
+    root.grid_columnconfigure(1,minsize=600)
+    root.grid_rowconfigure(1,minsize=600)
+    # root.grid_columnconfigure(2,minsize=600)
+    # root.grid_rowconfigure(2,minsize=100)
     
     # get stockPareto data from yd
     stockPareto, bestPick = yd.getOptionsData(float(Risk), float(Budget))
@@ -209,7 +211,7 @@ if __name__ == '__main__':
     # add cursor 
     mplcursors.cursor(pareto_ax, hover=True).connect(
         "add", lambda sel: sel.annotation.set_text(stockPareto['printString'][sel.target.index]))
-    canvas.get_tk_widget().grid(row=1, column=1, rowspan=2)
+    canvas.get_tk_widget().grid(row=1, column=1)#, rowspan=2)
     
     # create figure and axes objects for detail plot to be placed into 
     detail_fig, detail_ax = createDetailFig()
@@ -221,7 +223,7 @@ if __name__ == '__main__':
     
     # create text frame
     testFrame = textOutput(root, Risk, Budget, bestPick)
-    testFrame.grid(row=2, column=2, sticky = "NESW")
+    testFrame.grid(row=2, column=1, columnspan = 2)#), sticky = "W")
 
     
     tkinter.mainloop()
