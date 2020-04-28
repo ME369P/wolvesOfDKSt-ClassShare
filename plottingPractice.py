@@ -12,7 +12,6 @@ import matplotlib.patches as mpatches
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import matplotlib
 matplotlib.use("TkAgg")
-matplotlib.use("TkAgg")
 
 import getYahooData as yd
 
