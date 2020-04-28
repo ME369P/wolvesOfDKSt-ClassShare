@@ -32,6 +32,7 @@ def gui_input(prompt1, prompt2):
 
     _root = tkinter.Tk()
     _root.title("User Details")
+    _root.geometry("+600+400")
     # _root.geometry('1500x800+100+100')
     # this will contain the entered string, and will
     # still exist after the window is destroyed
@@ -159,19 +160,19 @@ def drawBestData(_detail_fig, _detail_ax, _bestPick):
 def textOutput(_root, _Risk, _Budget, _bestPick):
     _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
     # print out risk and budget levels
-    label1 = tkinter.Label(_textFrame, borderwidth = 3, text="Risk is: {}%".format(float(_Risk)*100))
+    label1 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text="Risk is: {}%".format(float(_Risk)*100))
     label1.grid(row=1, column=1)
-    label2 = tkinter.Label(_textFrame, borderwidth = 3, text="Budget is: ${}".format(Budget))
+    label2 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text="Budget is: ${}".format(Budget))
     label2.grid(row=1, column=2)
     
     # print out winning option information
-    label3 = tkinter.Label(_textFrame, borderwidth = 3, text = "Contract Name: {}".format(_bestPick.name))
+    label3 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Contract Name: {}".format(_bestPick.name))
     label3.grid(row=1, column=3)
-    label4 = tkinter.Label(_textFrame, borderwidth = 3, text = "Probability of Profit: {}".format(_bestPick['POP']))
+    label4 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Probability of Profit: {:.2f}".format(_bestPick['POP']))
     label4.grid(row=1, column=4)
-    label5 = tkinter.Label(_textFrame, borderwidth = 3, text = "Potential Gain: ${}".format(_bestPick['Potential Gain Multiple Contracts']))
+    label5 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Potential Gain: ${:.2f}".format(_bestPick['Potential Gain Multiple Contracts']))
     label5.grid(row=1, column=5)
-    label6 = tkinter.Label(_textFrame, borderwidth = 3, text = "Number of Contracts: {}".format(_bestPick['contractsInBudget']))
+    label6 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Number of Contracts: {}".format(_bestPick['contractsInBudget']))
     label6.grid(row=1, column=6)
     label7 = tkinter.Label(_textFrame, text = "THIS IS NOT FINANCIAL ADVICE", font=("Courier", 16), fg="red")
     label7.grid(row=2, column=1, columnspan = 6)
