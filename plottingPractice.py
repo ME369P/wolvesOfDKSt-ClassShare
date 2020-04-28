@@ -20,64 +20,11 @@ matplotlib.use("TkAgg")
 import getYahooData as yd
 
 
-
-
-# def plotOptions(ax, pareto_df, param_dict):
-#     """
-#     Function to plot options data from yahoo_fin
-
-#     Parameters
-#     ----------
-#     ax : Axes
-#     The axes to draw to
-
-#     data1 : array
-#         The x data
-
-#     data2 : array
-#         The y data
-
-#     param_dict : dict
-#         Dictionary of kwargs to pass to ax.plot
-
-#     Returns
-#     -------
-#     out : list
-#         list of artists added
-
-#     """
-#     tickerGroup = []
-#     for ticker in pareto_df['Stock Name'].unique():
-#         tickerGroup.append(pareto_df[pareto_df['Stock Name'] == ticker])
-    
-#     colors = cm.rainbow(np.linspace(0, 1, len(tickerGroup)))
-#     for DF, c in zip(tickerGroup, colors):
-#         out = DF.plot(kind='line',x='POP',y='Potential Gain Multiple Contracts', 
-#                       legend = 'Stock Name', ax=ax, color=c)
-#     return ax
-
-
-# class plotOptions(tkinter.Tk):
     
 Risk_num = 0
 Budget_num = 0
 startFlag = False
 
-# def __init__(self, df, *args, **kwargs):
-#     tkinter.Tk.__init__(self, *args, **kwargs)
-#     self.title("Put Option Strategy")
-#     self.geometry('1500x800+100+100')
-#     # self._setup_inputGUI()
-#     # self._setup_gui()
-#     # self._questions = questions[:]
-#     # self._answers = answers
-#     # self._show_next_question()
-
-# def store_data():
-#     print("Risk: %s\nBudget: %s" % (Risk.get(), Budget.get()))
-#     Risk_num = float(Risk.get())
-#     Budget_num = float(Budget.get())
-#     return Risk_num, Budget_num
 
 def startMainGUI():
     _root = tkinter.Tk()
@@ -101,18 +48,6 @@ def _setup_inputGUI(self):
     go = tkinter.Button(textFrame, text='Enter')#, command=store_data)
     go.grid(row=3, column=1, columnspan=2)
 
-
-# def startTextInput(_root):
-#     # initialize TK GUI window
-
-    
-#     # input_root = tkinter.Tk()
-#     # input_root = tkinter.Toplevel()
-#     # input_root.wm_title("Inputs")
-#     _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
-#     _textFrame.pack()
-
-#     return _textFrame
 
 
 
