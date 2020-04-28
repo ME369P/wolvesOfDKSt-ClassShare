@@ -99,13 +99,18 @@ def gui_input(prompt1, prompt2):
     value2 = var2.get()
     return value1, value2
 
-def createParetoFig():
+def createParetoFig(_pareto_df):
     # initalize figure and axes objects using pyplot for pareto curve
     pareto_fig = plt.Figure(figsize=(8,7.5), dpi=100)
     pareto_ax = pareto_fig.add_subplot(111)
     pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
     pareto_ax.set_xlabel('Probability of Profit (%)')
     pareto_ax.set_ylabel('Premium Collected')
+    _pareto_df.plot.scatter(x='POP',y='Potential Gain Multiple Contracts', ax = pareto_ax)
+    # ax = finalFrame.plot(kind = 'scatter', x='POP',y='Potential Gain Multiple Contracts')
+    mplcursors.cursor(hover=True).connect(
+        "add", lambda sel: sel.annotation.set_text(_pareto_df.index[sel.target.index]))
+    
     # pareto_ax.legend()
     # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
     # put pareto curve axes into tkinter GUI
@@ -118,7 +123,13 @@ def plotPareto(_pareto_ax, _pareto_df):
     plots the data in "_pareto_df" to _pareto_ax grouped by ticker and color coded
     """
     
-    
+    # show contract name
+    # _pareto_ax = _pareto_df.plot.scatter(x='POP',y='Potential Gain Multiple Contracts')
+    # # ax = finalFrame.plot(kind = 'scatter', x='POP',y='Potential Gain Multiple Contracts')
+    # mplcursors.cursor(hover=True).connect(
+    #     "add", lambda sel: sel.annotation.set_text(_pareto_df.index[sel.target.index]))
+
+
     
     # _tickerGroup = []
     # dct = dict()
@@ -200,10 +211,10 @@ if __name__ == '__main__':
     # bestPick = pd.read_pickle('bestPick0425.pk1')
     
     # create figure and axes objects for stockPareto to be placed into 
-    pareto_fig, pareto_ax = createParetoFig()
+    pareto_fig, pareto_ax = createParetoFig(stockPareto)
     
     #place stockPareto data into the axes created above
-    plotPareto(pareto_ax, stockPareto)
+    # plotPareto(pareto_ax, stockPareto)
     canvas = FigureCanvasTkAgg(pareto_fig, master=root)
     canvas.get_tk_widget().grid(row=1, column=1, rowspan=2)
     
