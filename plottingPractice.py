@@ -101,15 +101,14 @@ def gui_input(prompt1, prompt2):
 
 def createParetoFig(_pareto_df):
     # initalize figure and axes objects using pyplot for pareto curve
-    pareto_fig = plt.Figure(figsize=(8,7.5), dpi=100)
+    pareto_fig = Figure(figsize=(8,7.5), dpi=100)
     pareto_ax = pareto_fig.add_subplot(111)
     pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
     pareto_ax.set_xlabel('Probability of Profit (%)')
     pareto_ax.set_ylabel('Premium Collected')
     _pareto_df.plot.scatter(x='POP',y='Potential Gain Multiple Contracts', ax = pareto_ax)
     # ax = finalFrame.plot(kind = 'scatter', x='POP',y='Potential Gain Multiple Contracts')
-    mplcursors.cursor(hover=True).connect(
-        "add", lambda sel: sel.annotation.set_text(_pareto_df.index[sel.target.index]))
+
     
     # pareto_ax.legend()
     # stockPareto, bestPick, stockParetoChart = yd.getOptionsData(0.9, 100000, pareto_ax)
@@ -155,7 +154,7 @@ def plotPareto(_pareto_ax, _pareto_df):
 
 def createDetailFig():
     # initalize figure and axes objects using pyplot for pareto curve
-    detail_fig = plt.Figure(figsize=(7.50,4.00), dpi=100)
+    detail_fig = Figure(figsize=(7.50,4.00), dpi=100)
     detail_ax = detail_fig.add_subplot(111)
 
     # pareto_ax.legend()
@@ -216,6 +215,9 @@ if __name__ == '__main__':
     #place stockPareto data into the axes created above
     # plotPareto(pareto_ax, stockPareto)
     canvas = FigureCanvasTkAgg(pareto_fig, master=root)
+    mplcursors.cursor(pareto_ax)
+    # mplcursors.cursor(hover=True).connect(
+    #     "add", lambda sel: sel.annotation.set_text(stockPareto.index[sel.target.index]))
     canvas.get_tk_widget().grid(row=1, column=1, rowspan=2)
     
     # create figure and axes objects for detail plot to be placed into 
