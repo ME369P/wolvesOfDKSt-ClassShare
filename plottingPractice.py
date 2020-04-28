@@ -1,6 +1,7 @@
 import numpy as np
 import tkinter
 import pandas as pd
+import mplcursors
 
 # Implement the default Matplotlib key bindings.
 from matplotlib.backend_bases import key_press_handler
@@ -15,6 +16,7 @@ matplotlib.use("TkAgg")
 
 import getYahooData as yd
 
+plt.ion()
 
     
 Risk_num = 0
@@ -115,26 +117,30 @@ def plotPareto(_pareto_ax, _pareto_df):
     """
     plots the data in "_pareto_df" to _pareto_ax grouped by ticker and color coded
     """
-    _tickerGroup = []
-    dct = dict()
-    i = 0
-    # makes a list of dataframes with common stock names. 
-    for ticker in _pareto_df['Stock Name'].unique():
-        _tickerGroup.append(_pareto_df[_pareto_df['Stock Name'] == ticker])
-        
-    colors = [tuple(l) for l in cm.rainbow(np.linspace(0, 1, len(_tickerGroup)))] # unique color for each option series
     
-    # creates a dictionary in form of {stock name: tuple(['POP'], ['Gain'])}
-    for DF, c in zip(_tickerGroup, colors):
-        dct[_pareto_df['Stock Name'].unique()[i]]= (DF['POP'].tolist(), DF['Potential Gain Multiple Contracts'].tolist())
-        i+=1
+    
+    
+    # _tickerGroup = []
+    # dct = dict()
+    # i = 0
+    # # makes a list of dataframes with common stock names. 
+    # for ticker in _pareto_df['Stock Name'].unique():
+    #     _tickerGroup.append(_pareto_df[_pareto_df['Stock Name'] == ticker])
         
-    # prints each dataseries and use dictionary key as label for creating legend
-    for i,c in zip(dct, colors):
-        _pareto_ax.plot(*dct[i], label=i, color = c, marker='*', linestyle='None')
+    # colors = [tuple(l) for l in cm.rainbow(np.linspace(0, 1, len(_tickerGroup)))] # unique color for each option series
+    
+    # # creates a dictionary in form of {stock name: tuple(['POP'], ['Gain'])}
+    # for DF, c in zip(_tickerGroup, colors):
+    #     dct[_pareto_df['Stock Name'].unique()[i]]= (DF['POP'].tolist(), DF['Potential Gain Multiple Contracts'].tolist())
+    #     i+=1
+        
+    # # prints each dataseries and use dictionary key as label for creating legend
+    # for i,c in zip(dct, colors):
+    #     _pareto_ax.plot(*dct[i], label=i, color = c, marker='*', linestyle='None')
         
         
-    _pareto_ax.legend()
+    # _pareto_ax.legend()
+
 
 def createDetailFig():
     # initalize figure and axes objects using pyplot for pareto curve
