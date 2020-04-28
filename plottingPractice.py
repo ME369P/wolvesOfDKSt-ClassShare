@@ -2,25 +2,18 @@ import numpy as np
 import tkinter
 import pandas as pd
 import mplcursors
-
 # Implement the default Matplotlib key bindings.
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 import matplotlib.cm as cm
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 import matplotlib
 matplotlib.use("TkAgg")
-
 import getYahooData as yd
 
 plt.ion()
-
-    
-Risk_num = 0
-Budget_num = 0
 
 
 
@@ -29,8 +22,6 @@ def startMainGUI():
     _root.title("Put Option Strategy")
     _root.geometry('1500x800+100+100')
     return _root
-
-
 
 ###########################################
 ############# Get Inputs ##################
@@ -178,7 +169,7 @@ def textOutput(_root, _Risk, _Budget, _bestPick):
     label3.grid(row=3, column=1)
     label4 = tkinter.Label(_textFrame, text = "Probability of Profit: {}".format(_bestPick['POP']))
     label4.grid(row=4, column=1)
-    label5 = tkinter.Label(_textFrame, text = "Potential Gain: {}".format(_bestPick['Potential Gain Multiple Contracts']))
+    label5 = tkinter.Label(_textFrame, text = "Potential Gain: ${}".format(_bestPick['Potential Gain Multiple Contracts']))
     label5.grid(row=5, column=1)
     label6 = tkinter.Label(_textFrame, text = "Number of Contracts: {}".format(_bestPick['contractsInBudget']))
     label6.grid(row=6, column=1)
