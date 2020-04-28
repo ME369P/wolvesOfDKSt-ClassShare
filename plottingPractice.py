@@ -215,9 +215,10 @@ if __name__ == '__main__':
     #place stockPareto data into the axes created above
     # plotPareto(pareto_ax, stockPareto)
     canvas = FigureCanvasTkAgg(pareto_fig, master=root)
-    mplcursors.cursor(pareto_ax)
-    # mplcursors.cursor(hover=True).connect(
-    #     "add", lambda sel: sel.annotation.set_text(stockPareto.index[sel.target.index]))
+    
+    # add cursor 
+    mplcursors.cursor(pareto_ax, hover=True).connect(
+        "add", lambda sel: sel.annotation.set_text(stockPareto.index[sel.target.index]))
     canvas.get_tk_widget().grid(row=1, column=1, rowspan=2)
     
     # create figure and axes objects for detail plot to be placed into 
