@@ -163,7 +163,7 @@ def textOutput(_root, _Risk, _Budget, _bestPick):
     label2.grid(row=2, column=1)
     
     # print out winning option information
-    label3 = tkinter.Label(_textFrame, text = "Contract Name: {}".format(_bestPick['Contract Name']))
+    label3 = tkinter.Label(_textFrame, text = "Contract Name: {}".format(_bestPick.name))
     label3.grid(row=3, column=1)
     label4 = tkinter.Label(_textFrame, text = "Probability of Profit: {}".format(_bestPick['POP']))
     label4.grid(row=4, column=1)
