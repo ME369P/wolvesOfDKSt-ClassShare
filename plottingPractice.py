@@ -19,7 +19,7 @@ import getYahooData as yd
     
 Risk_num = 0
 Budget_num = 0
-startFlag = False
+
 
 
 def startMainGUI():
@@ -27,23 +27,6 @@ def startMainGUI():
     _root.title("Put Option Strategy")
     _root.geometry('1500x800+100+100')
     return _root
-
-
-
-def _setup_inputGUI(self):
-    # risk level input
-    self.tkinter.Label(textFrame, text="Risk Level").grid(row=1, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
-    Risk = tkinter.Entry(textFrame)
-    Risk.grid(row=1, column=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-    # budget level input
-    self.Label(textFrame, text="Budget").grid(row=2, column=1)#side=tkinter.LEFT, anchor=tkinter.SW)
-    Budget = tkinter.Entry(textFrame)
-    Budget.grid(row=2, column=2)#side=tkinter.LEFT, anchor=tkinter.SW)
-    self.Risk_num = Risk.get()
-    self.Budget_num = Budget.get()
-    go = tkinter.Button(textFrame, text='Enter')#, command=store_data)
-    go.grid(row=3, column=1, columnspan=2)
-
 
 
 
@@ -74,50 +57,7 @@ def GetInputs(_textFrame):
 ############################################
 ######### Import data and Plot #############
 ############################################
-def printDetailFig(self, BestTicker):
-    # initialize figure and axes objects using pyplot for detail plot
-    detail_fig = plt.figure(figsize= (6,4), dpi = 100)
-    detail_ax = detail_fig.add_subplot(111)
-    yd.getDetailedQuote('DOW', detail_ax)
-    # put detail axes into tkinter GUI 
-    canvas = FigureCanvasTkAgg(detail_fig, master=root)
-    canvas.get_tk_widget().pack(side=tkinter.LEFT, anchor=tkinter.NW)#, fill=tkinter.X)#, expand=1)
-    
 
-
-def printParetoCurve(self):
-    # initalize figure and axes objects using pyplot for pareto curve
-    pareto_fig = plt.figure(figsize=(8,7), dpi=100)
-    pareto_ax = pareto_fig.add_subplot(111)
-    # stockPareto, bestPick = yd.getOptionsData(0.9, 10000)
-    stockPareto = pd.read_pickle('stockParetaData0425.pk1')
-    stockPareto.plot(kind='scatter',x='POP',y='Potential Gain Multiple Contracts', legend = 'Stock Name', ax = pareto_ax)
-    pareto_ax.legend()
-    pareto_ax.set_title('Pareto Curve for Best Options (Puts)')
-    pareto_ax.set_xlabel('Probability of Profit (%)')
-    pareto_ax.set_ylabel('Premium Collected')
-    
-    
-    # put pareto curve axes into tkinter GUI
-    canvas = FigureCanvasTkAgg(pareto_fig, master=root)
-    canvas.get_tk_widget().pack(side=tkinter.RIGHT, anchor=tkinter.NE)#, fill=tkinter.Y)#, expand=1)
-
-
-
-
-
-def callback():
-    print("click!")
-
-
-
-def refresh():
-    print("refresh")
-
-# b = tkinter.Button(master=root, text="Quit", command=callback)
-# b.pack(side=tkinter.LEFT, anchor=tkinter.SW)
-# refresh = tkinter.Button(master=root, text = "Refresh", command=refresh)
-# refresh.pack(side=tkinter.LEFT, anchor=tkinter.SW)
 
 
 def gui_input(prompt1, prompt2):
@@ -265,11 +205,7 @@ if __name__ == '__main__':
     detail_fig, detail_ax = createDetailFig()
     
     # place bestPick figure into detail_fig
-    if isinstance(bestPick, pd.Series): # checking if bestPick is a DF or series
-        stockName_series = bestPick
-    else:
-        stockName_series = bestPick.iloc[0]
-    detail_fig = drawBestData(detail_fig, detail_ax, stockName_series['Stock Name'])
+    detail_fig = drawBestData(detail_fig, detail_ax, bestPick['Stock Name'])
     canvas = FigureCanvasTkAgg(detail_fig, master=root)
     canvas.get_tk_widget().grid(row=1, column=2)#, rowspan=2)
     
@@ -318,46 +254,3 @@ if __name__ == '__main__':
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-# class Application(tkinter.Frame):
-#     def __init__(self, master=None):
-#         super().__init__(master)
-#         self.master = master
-#         self.pack()
-#         self.create_widgets()
-
-#     def create_widgets(self):
-#         self.hi_there = tkinter.Button(self)
-#         self.hi_there["text"] = "Hello World\n(click me)"
-#         self.hi_there["command"] = self.say_hi
-#         self.hi_there.pack(side="top")
-
-#         self.quit = tkinter.Button(self, text="QUIT", fg="red",
-#                               command=self.master.destroy)
-#         self.quit.pack(side="bottom")
-
-#     def say_hi(self):
-#         print("hi there, everyone!")
-
-
-
-# def create_widgets(self):
-#     self.hi_there = tkinter.Button(self)
-#     self.hi_there["text"] = "Hello World\n(click me)"
-#     self.hi_there["command"] = self.say_hi
-#     self.hi_there.pack(side="left")
-
-#     self.quit = tkinter.Button(self, text="QUIT", fg="red",
-#                           command=self.master.destroy)
-#     self.quit.pack(side="bottom")
