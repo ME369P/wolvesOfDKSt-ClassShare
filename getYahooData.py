@@ -37,14 +37,16 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
     # date selection
     today = datetime.today()
-    optionsDate = datetime(2020,5,1)
+    optionsDate = datetime(2020,5,8)
     t = ((optionsDate - today).days + ((optionsDate - today).seconds/86400))/365
+    daysLeft = (optionsDate - today).days
+    hoursLeft = int((optionsDate - today).seconds/3600)
     if printOutput:
-        print('t = {}'.format(t))
+        print('\nOptions will expire in approximately {} days and {} hours'.format(daysLeft,hoursLeft))
     stockPareto = pd.DataFrame()
 
     if printOutput:
-        print('Starting Data Capture')
+        print('Pulling stock data...\n')
 
     # initial data capture and processing
     for stock in stock_info.tickers_dow():
@@ -145,7 +147,7 @@ def getDetailedQuote(stock, ax1 = None):
 
     stockOptions = options.get_puts(stock).plot(x='Strike',y=['Bid','Ask'],
                                                 xlim=[.5*currentPrice,1.5*currentPrice],
-                                                title='Bid/Ask Put Spread for {}'.format(stock), ax = ax1)
+                                                title='Bid and Ask Prices for {} Options Contracts'.format(stock), ax = ax1)
     stockOptions.axvline(currentPrice, color='green', ls='--')
 
     return stockOptions

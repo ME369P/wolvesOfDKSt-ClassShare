@@ -3,3 +3,5 @@ hrhwPhase1.py
 pullOption.py
 .DS_Store
 *.pyc
+*.pyc
+__pycache__/getYahooData.cpython-37.pyc
