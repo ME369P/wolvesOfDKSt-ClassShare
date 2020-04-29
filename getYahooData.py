@@ -145,12 +145,13 @@ def getDetailedQuote(stock, ax1 = None):
     currentPrice=stock_info.get_live_price(stock)
     #info = stock_info.get_quote_table(stock)
 
-    stockOptions = options.get_puts(stock).plot(x='Strike',y=['Bid','Ask'],
+    stockOptions = options.get_puts(stock, date='05/08/20').plot(x='Strike',y=['Bid','Ask'],
                                                 xlim=[.5*currentPrice,1.5*currentPrice],
                                                 title='Bid and Ask Prices for {} Options Contracts'.format(stock), ax = ax1)
     stockOptions.axvline(currentPrice, color='green', ls='--')
     stockOptions.set_xlabel('Strike Price ($)')
     stockOptions.set_ylabel('Contract Price ($)')
+    
 
     return stockOptions
 

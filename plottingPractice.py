@@ -88,7 +88,7 @@ def gui_input(prompt1, prompt2):
 ###################################################
 
 
-def createParetoFig(_pareto_df):
+def createParetoFig(_pareto_df,_bestPick):
     # initalize figure and axes objects using pyplot for pareto curve
     pareto_fig = Figure(figsize=(6,6), dpi=100)
     pareto_ax = pareto_fig.add_subplot(111)
@@ -97,8 +97,9 @@ def createParetoFig(_pareto_df):
     pareto_ax.set_xlabel('Probability of Profit (%)')
     pareto_ax.set_ylabel('Potential Gain ($)')
     # ax = finalFrame.plot(kind = 'scatter', x='POP',y='Potential Gain Multiple Contracts')
-
-  
+    pareto_ax.axvline(_bestPick['POP'], color='green', ls='--')
+    pareto_ax.axhline(_bestPick['Potential Gain Multiple Contracts'], color='green', ls='--')
+    
     return pareto_fig, pareto_ax
 
 
@@ -160,7 +161,18 @@ def createDetailFig():
 
 
 def drawBestData(_detail_fig, _detail_ax, _bestPick):
-    yd.getDetailedQuote(_bestPick, _detail_ax)
+    # David should be commenting his code
+    # inputs:
+    #   _detail_fig = ...?
+    #   _detail_ax = .....?
+    #   _bestPick --- The BEST PICK SERIES WHICH IS NOT JUST THE NAME OF THE STOCK IN BEST PICK
+    #       This is used to plot the best point on the detail fig
+    #       Also the stock name is used in the getDetailedQuote function call
+    
+    xPoint = _bestPick['Strike']
+    yPoint = _bestPick['Potential Gain']/100
+    yd.getDetailedQuote(_bestPick['Stock Name'], _detail_ax)
+    _detail_ax.plot(xPoint,yPoint,'ro')
     _detail_fig.axes.append(_detail_ax)
     return _detail_fig
 
@@ -201,7 +213,7 @@ if __name__ == '__main__':
     
     # create window to ask for user inputs
     Risk, Budget = gui_input("Desired probability of profit:", "Available budget:")
-    print("Finding the best options contracts with a ${} budget and {} probability of profit".format(Budget, Risk))
+    print("Finding the best options contracts with a ${} budget and {}% probability of profit".format(Budget, Risk))
     
     # create main window and configure grid size
     root = startMainGUI()
@@ -216,7 +228,7 @@ if __name__ == '__main__':
     # bestPick = pd.read_pickle('bestPick0425.pk1')
     
     # create figure and axes objects for stockPareto to be placed into 
-    pareto_fig, pareto_ax = createParetoFig(stockPareto)
+    pareto_fig, pareto_ax = createParetoFig(stockPareto, bestPick)
     
     #place stockPareto data into the axes created above
     # plotPareto(pareto_ax, stockPareto)
@@ -231,7 +243,7 @@ if __name__ == '__main__':
     detail_fig, detail_ax = createDetailFig()
     
     # place bestPick figure into detail_fig
-    detail_fig = drawBestData(detail_fig, detail_ax, bestPick['Stock Name'])
+    detail_fig = drawBestData(detail_fig, detail_ax, bestPick)
     canvas = FigureCanvasTkAgg(detail_fig, master=root)
     canvas.get_tk_widget().grid(row=1, column=2)#, rowspan=2)
     
