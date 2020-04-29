@@ -37,7 +37,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
     # date selection
     today = datetime.today()
-    optionsDate = datetime(2020,5,7)
+    optionsDate = datetime(2020,5,1)
     t = ((optionsDate - today).days + ((optionsDate - today).seconds/86400))/365
     if printOutput:
         print('t = {}'.format(t))
