@@ -149,10 +149,12 @@ def getDetailedQuote(stock, ax1 = None):
                                                 xlim=[.5*currentPrice,1.5*currentPrice],
                                                 title='Bid and Ask Prices for {} Options Contracts'.format(stock), ax = ax1)
     stockOptions.axvline(currentPrice, color='green', ls='--')
+    stockOptions.set_xlabel('Strike Price ($)')
+    stockOptions.set_ylabel('Contract Price ($)')
 
     return stockOptions
 
 
 if __name__ == '__main__':
-    stockPareto, bestPick = getOptionsData(personalRiskTolerance, budget, printOutput = True)
+    #stockPareto, bestPick = getOptionsData(personalRiskTolerance, budget, printOutput = True)
     chart = getDetailedQuote('DOW')
