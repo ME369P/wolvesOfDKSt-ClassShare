@@ -19,7 +19,7 @@ plt.ion()
 
 def startMainGUI():
     _root = tkinter.Tk()
-    _root.title("Put Option Strategy")
+    _root.title("Wolves of DK - Option Strategy Visualization")
     _root.geometry('1200x700+100+100')
     return _root
 
@@ -31,27 +31,40 @@ def startMainGUI():
 def gui_input(prompt1, prompt2):
 
     _root = tkinter.Tk()
-    _root.title("User Details")
-    _root.geometry("+600+400")
+    _root.title('Wolves of DK St - Options Strategy Visualization')
+    _root.geometry("+1200+800")
     # _root.geometry('1500x800+100+100')
     # this will contain the entered string, and will
     # still exist after the window is destroyed
     var1 = tkinter.StringVar()
     var2 = tkinter.StringVar()
 
+    # Starting Message
+    
+    tkinter.Label(_root, text='Welcome to the Options Strategy Visualization').grid(row=1, column=1, columnspan=2)
+    tkinter.Label(_root, text='Enter your desired probability of profit:').grid(row=3, column=1, columnspan=2)
+    tkinter.Label(_root, text=' ').grid(row=2, column=1, columnspan=2)
+    tkinter.Label(_root, text='0.1 = 10% chance of profit (Throw your money away)').grid(row=4, column=1, columnspan=2)
+    tkinter.Label(_root, text='0.5 = 50% chance of profit (gambling)').grid(row=5, column=1, columnspan=2)
+    tkinter.Label(_root, text='0.9 = 90% chance of profit (high chance for profit)').grid(row=6, column=1, columnspan=2)
+    tkinter.Label(_root, text=' ').grid(row=8, column=1, columnspan=2)
+    tkinter.Label(_root, text='Enter your desired budget (number, min $2000)').grid(row=9, column=1, columnspan=2)
+    tkinter.Label(_root, text='Please enter only numeric digits, no characters').grid(row=10, column=1, columnspan=2)
+    tkinter.Label(_root, text=' ').grid(row=13, column=1, columnspan=2)
+    
     # create the GUI
     label1 = tkinter.Label(_root, text=prompt1)
     entry1 = tkinter.Entry(_root, textvariable=var1)
-    label1.grid(row=1, column=1)
-    entry1.grid(row=1, column=2)
+    label1.grid(row=7, column=1)
+    entry1.grid(row=7, column=2)
     
     label2 = tkinter.Label(_root, text=prompt2)
     entry2 = tkinter.Entry(_root, textvariable=var2)
-    label2.grid(row=2, column=1)
-    entry2.grid(row=2, column=2)
+    label2.grid(row=12, column=1)
+    entry2.grid(row=12, column=2)
     
     go = tkinter.Button(_root, text='Enter')#, command=store_data)
-    go.grid(row=3, column=1, columnspan=2)
+    go.grid(row=14, column=1, columnspan=2)
 
     # Let the user press the return key to destroy the gui 
     go.bind("<Button-1>", lambda event: _root.destroy())
@@ -79,10 +92,10 @@ def createParetoFig(_pareto_df):
     # initalize figure and axes objects using pyplot for pareto curve
     pareto_fig = Figure(figsize=(6,6), dpi=100)
     pareto_ax = pareto_fig.add_subplot(111)
-    pareto_ax.set_title('Pareto Curve of Available Options')
-    pareto_ax.set_xlabel('Probability of Profit (%)')
-    pareto_ax.set_ylabel('Premium Collected')
+    pareto_ax.set_title('Pareto Curve of Available Options in DOW JONES Index')
     _pareto_df.plot.scatter(x='POP',y='Potential Gain Multiple Contracts', ax = pareto_ax)
+    pareto_ax.set_xlabel('Probability of Profit (%)')
+    pareto_ax.set_ylabel('Potential Gain ($)')
     # ax = finalFrame.plot(kind = 'scatter', x='POP',y='Potential Gain Multiple Contracts')
 
   
@@ -168,11 +181,11 @@ def textOutput(_root, _Risk, _Budget, _bestPick):
     # print out winning option information
     label3 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Contract Name: {}".format(_bestPick.name))
     label3.grid(row=1, column=3)
-    label4 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Probability of Profit: {:.2f}".format(_bestPick['POP']))
+    label4 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Probability of Profit: {:.2f}%".format(_bestPick['POP']))
     label4.grid(row=1, column=4)
     label5 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Potential Gain: ${:.2f}".format(_bestPick['Potential Gain Multiple Contracts']))
     label5.grid(row=1, column=5)
-    label6 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Number of Contracts: {}".format(_bestPick['contractsInBudget']))
+    label6 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text = "Stock: {}".format(_bestPick['Stock Name']))
     label6.grid(row=1, column=6)
     label7 = tkinter.Label(_textFrame, text = "THIS IS NOT FINANCIAL ADVICE", font=("Courier", 16), fg="red")
     label7.grid(row=2, column=1, columnspan = 6)
@@ -187,8 +200,8 @@ if __name__ == '__main__':
     print('main')
     
     # create window to ask for user inputs
-    Risk, Budget = gui_input("Enter your desired risk:", "Enter your available budget:")
-    print("risk: {} budget: {}".format(Risk, Budget))
+    Risk, Budget = gui_input("Desired probability of profit:", "Available budget:")
+    print("Finding the best options contracts with a ${} budget and {} probability of profit".format(Budget, Risk))
     
     # create main window and configure grid size
     root = startMainGUI()
