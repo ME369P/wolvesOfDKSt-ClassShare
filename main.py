@@ -32,7 +32,7 @@ def gui_input(prompt1, prompt2):
 
     _root = tkinter.Tk()
     _root.title('Wolves of DK St - Options Strategy Visualization')
-    _root.geometry("+1200+800")
+    _root.geometry("+600+400")
     # _root.geometry('1500x800+100+100')
     # this will contain the entered string, and will
     # still exist after the window is destroyed
