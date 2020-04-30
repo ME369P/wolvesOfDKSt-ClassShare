@@ -185,7 +185,7 @@ def drawBestData(_detail_fig, _detail_ax, _bestPick):
 def textOutput(_root, _Risk, _Budget, _bestPick):
     _textFrame = tkinter.Frame(_root, relief = tkinter.RAISED, borderwidth=5)
     # print out risk and budget levels
-    label1 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text="Risk is: {}%".format(float(_Risk)*100))
+    label1 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text="POP desired is: {}%".format(float(_Risk)*100))
     label1.grid(row=1, column=1)
     label2 = tkinter.Label(_textFrame, padx = 10, borderwidth = 3, text="Budget is: ${}".format(Budget))
     label2.grid(row=1, column=2)
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     
     # create window to ask for user inputs
     Risk, Budget = gui_input("Desired probability of profit:", "Available budget:")
-    print("Finding the best options contracts with a ${} budget and {}% probability of profit".format(Budget, Risk))
+    print("Finding the best options contracts with a ${} budget and {}% probability of profit".format(Budget, (eval(Risk)*100)))
     
     # create main window and configure grid size
     root = startMainGUI()

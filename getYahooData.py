@@ -37,7 +37,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
     # date selection
     today = datetime.today()
-    optionsDate = datetime(2020,5,8)
+    optionsDate = datetime(2020,5,15)
     t = ((optionsDate - today).days + ((optionsDate - today).seconds/86400))/365
     daysLeft = (optionsDate - today).days
     hoursLeft = int((optionsDate - today).seconds/3600)
@@ -87,7 +87,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     ####################################################
 
     # POP derived from Black-Scholes model
-    stockPareto['POP'] = stats.norm.cdf((np.log(stockPareto['Current Price'] / stockPareto['Strike'] ) +
+    stockPareto['POP'] = 100*stats.norm.cdf((np.log(stockPareto['Current Price'] / stockPareto['Strike'] ) +
                                          ( (stockPareto['IV']**2) /2)*t) / (stockPareto['IV']*np.sqrt(t)))
     stockPareto['Strike'] = stockPareto['Strike'].astype(float)
     stockPareto['Bid'] = stockPareto['Bid'].astype(float)
@@ -122,7 +122,7 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     ####################
 
     #notAboveRisk = stockPareto['POP'] < (personalRiskTolerance + .01)
-    notBelowRisk = stockPareto['POP'] > (personalRiskTolerance)
+    notBelowRisk = stockPareto['POP'] > (personalRiskTolerance*100)
     bestPick = stockPareto[notBelowRisk].sort_values(by='Potential Gain Multiple Contracts',ascending = False)
     bestPick = bestPick.loc[bestPick['Potential Gain Multiple Contracts'].idxmax()]
 
@@ -144,9 +144,14 @@ def getDetailedQuote(stock, ax1 = None):
     #stockPutChain = options.get_puts(stock)
     currentPrice=stock_info.get_live_price(stock)
     #info = stock_info.get_quote_table(stock)
+    stockOptionVals=options.get_puts(stock, date='05/15/20')
+    asksExist = stockOptionVals['Ask'] != '-'
+    bidsExist = stockOptionVals['Bid'] != '-'
+    
+    stockOptionVals = stockOptionVals[bidsExist & asksExist] 
 
-    stockOptions = options.get_puts(stock, date='05/08/20').plot(x='Strike',y=['Bid','Ask'],
-                                                xlim=[.5*currentPrice,1.5*currentPrice],
+    stockOptions = stockOptionVals.plot(x='Strike',y=['Bid','Ask'],
+                                                xlim=[.25*currentPrice,1.75*currentPrice],
                                                 title='Bid and Ask Prices for {} Options Contracts'.format(stock), ax = ax1)
     stockOptions.axvline(currentPrice, color='green', ls='--')
     stockOptions.set_xlabel('Strike Price ($)')
