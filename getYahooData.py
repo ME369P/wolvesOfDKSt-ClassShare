@@ -1,17 +1,19 @@
-# getYahooData.py
-# Date Created: 4/14/20
-# Date Last Modified: 04/25/20
-# By: Nick Piacente
+'''
+getYahooData.py
+Date Created: 4/14/20
+Date Last Modified: 05/02/20
+By: Nick Piacente
 
-# Functions for generating processed dataframes and plots
-# For future plotting in a GUI environment
-# important columns:
-#
-# 'Potential Gain' - this is the option contract price * 100
-# 'POP' - this is the probability of profit. The
-#
-# Currently filtering options by budget = strike price * 100
-# It takes a few seconds per stock to fetch data from the internet on my machine (NP)
+Functions for generating processed dataframes and plots
+For future plotting in a GUI environment
+important columns:
+
+'Potential Gain' - this is the option contract price * 100
+'POP' - this is the probability of profit. The
+
+Currently filtering options by budget = strike price * 100
+It takes a few seconds per stock to fetch data from the internet on my machine (NP)
+'''
 
 from yahoo_fin import options
 from yahoo_fin import stock_info
@@ -25,16 +27,21 @@ personalRiskTolerance = .9
 budget = 10000
 
 def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
-    # get the up to date stock options pareto.
-    # Currently hardcoded for the DOW stocks
-    # inputs: personal risk tolerance, budget
-    # outputs:
-    #   stockPareto DataFrame (all options within the budget)
-    #   bestPick DataFrame (highest value return within risk tolerance)
-    # hardcoded:
-    #   options date - 5/1/2020
-    #   stocks to pick from: All DOW stocks
-
+    '''
+    get the up to date stock options pareto.
+    Currently hardcoded for the DOW stocks
+    inputs: 
+        personalRiskTolerance - risk level - number between 0 and 0.9
+        budget - Number - larger than 2000
+        printOutput - bool to determine whether print statements show
+    outputs:
+       stockPareto DataFrame (all options within the budget)
+       bestPick DataFrame (highest value return within risk tolerance)
+    hardcoded:
+       options date - 5/15/2020
+       stocks to pick from: All DOW stocks
+    '''
+    
     # date selection
     today = datetime.today()
     optionsDate = datetime(2020,5,15)
@@ -105,7 +112,6 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
 
     inBudget = stockPareto['contractsInBudget'] > 0
     isInteresting = stockPareto['Bid'] != 0
-    #withinPersonalRiskTolerance = stockPareto['POP'] > personalRiskTolerance
     stockPareto = stockPareto[inBudget & isInteresting]
     stockPareto = stockPareto.set_index('Contract Name')
 
@@ -121,7 +127,6 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
     ## Best Fit Logic ##
     ####################
 
-    #notAboveRisk = stockPareto['POP'] < (personalRiskTolerance + .01)
     notBelowRisk = stockPareto['POP'] > (personalRiskTolerance*100)
     bestPick = stockPareto[notBelowRisk].sort_values(by='Potential Gain Multiple Contracts',ascending = False)
     bestPick = bestPick.loc[bestPick['Potential Gain Multiple Contracts'].idxmax()]
@@ -132,34 +137,34 @@ def getOptionsData(personalRiskTolerance, budget, printOutput = 'True'):
         
     return stockPareto, bestPick
 
-
-
 def getDetailedQuote(stock, ax1 = None):
+    
+    '''
     # get the detailded bid/ask quote data for charting
-    # input : stock ticker of the option of interest
+    # input : 
+        stock - stock ticker of the option of interest
+        ax1 - matplotlib axis , if desired to specify
     # for use with bestPick frame:
     #   bestPick['Stock'] would be the input
     # output is a matplotlib AxesSubplot object
-
-    #stockPutChain = options.get_puts(stock)
+    '''
+    
+    # find the current price of the stock in question
     currentPrice=stock_info.get_live_price(stock)
-    #info = stock_info.get_quote_table(stock)
     stockOptionVals=options.get_puts(stock, date='05/15/20')
     asksExist = stockOptionVals['Ask'] != '-'
     bidsExist = stockOptionVals['Bid'] != '-'
     
     stockOptionVals = stockOptionVals[bidsExist & asksExist] 
-
     stockOptions = stockOptionVals.plot(x='Strike',y=['Bid','Ask'],
                                                 xlim=[.25*currentPrice,1.75*currentPrice],
                                                 title='Bid and Ask Prices for {} Options Contracts'.format(stock), ax = ax1)
+    # plot the current stock price as a vertical line in green
     stockOptions.axvline(currentPrice, color='green', ls='--')
     stockOptions.set_xlabel('Strike Price ($)')
     stockOptions.set_ylabel('Contract Price ($)')
     
-
     return stockOptions
-
 
 if __name__ == '__main__':
     #stockPareto, bestPick = getOptionsData(personalRiskTolerance, budget, printOutput = True)
